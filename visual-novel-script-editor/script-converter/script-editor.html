@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Visual Novel Script Editor</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0, shrink-to-fit=no, minimal-ui"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />    
+    
+    <script type="text/javascript" src="../glue/jquery/jquery-3.2.1.min.js"></script>     
+    <script type="text/javascript" src="script-editor.js"></script>            
+    <script type="text/javascript" src="script-export.js"></script>                      
+<!-- AnalyticsCode -->
+
+<!-- APICode -->
+<style type="text/css">
+    div{
+        padding:0.5em;
+    }
+    input{
+        width: 5em;
+    }
+    label{
+        color:red;
+    }
+</style>
+</head>
+<body onload="setTimeout(function(){window.scrollTo(0,1)},1);">
+    <!--body-->
+        <div>
+            Export all scripts: <br>
+            <button id="btnExport" onclick="javascript:exportFiles.init();">Export All Scripts</button>            
+        </div>
+        <!-- <div>
+            Export 1 script. Input chapter number: <br>
+            <input type="number" id="scriptNumber" name="scriptNumber">
+            <button id="btnExportSingle" onclick="javascript:exportFiles.exportSingleScript();">Export Script</button> 
+            <label id="error-script"></label>
+        </div> -->
+        <div>
+            Go to character-preview.html to adjust characters outfit: <br>
+            <button onclick="javascript:exportFiles.toCharacterPage();">Update Characters</button>        
+        </div>
+    </body>
+</html>

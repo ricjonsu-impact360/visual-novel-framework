@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@lmstudio/sdk": "^1.2.1",
+    "@vitalets/google-translate-api": "^9.2.1",
+    "translatte": "^3.0.1"
+  }
+}

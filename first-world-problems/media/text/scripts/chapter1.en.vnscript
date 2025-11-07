@@ -1,0 +1,229 @@
+ANIMEFFECT. trans1 #ffffff
+
+BACKGROUND. hd_home_office1 center
+CHARACTERS. @Barney position center anim ANIM_SIT_TYPING_GENTLE_REAR faceTo left
+OBJECT. desk desk_rear from { x:450,y:1720 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+OBJECT. chair office_chair_rear from { x:750,y:1730 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+
+SETTINGS. none nameTag Mane_Ijerr
+
+@None "...and that's the summary for last quarter. Good work hitting those targets, Barney."
+SETCHAR. @Barney anim ANIM_SIT_TYPING_GENTLE_REAR
+
+ANIMEFFECT. trans0 animStart instant
+
+CHARACTERS. @Barney anim ANIM_SIT_TYPING_GENTLE emo EMO_NEUTRAL position right faceTo left
+OBJECT. desk desk_front from { x:550,y:1700 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+OBJECT. chair office_chair_front from { x:800,y:1680 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+
+@Barney bubbleOffsetY 50 Thank you, Martha. The new workflow helped a lot.
+
+@None "Glad to hear it. Alright, let's get to the main event: FaceJournal." 
+@None "The client just called. I need your full attention for this."
+
+ANIMEFFECT. zoom_pan scale 1.5 posX 500 posY 900 moveX 120 moveY 0 time 0.5 easing Quadratic.EaseIn textDelay 0.5
+
+@Barney emo EMO_ANGRY I'm all ears
+
+ANIMEFFECT. trans0 animStart instant
+
+CHARACTERS. @Barney position center anim ANIM_SIT_TYPING_GENTLE_REAR faceTo left
+OBJECT. desk desk_rear from { x:450,y:1720 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+OBJECT. chair office_chair_rear from { x:750,y:1730 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+ANIMEFFECT. zoom_pan scale 1.5 posX 500 posY 900 moveX 120 moveY 0 time 0
+JUMPTO. cat_walking
+
+CONTINUE. cat_walking
+// cat walk right to left
+SFX. loop soft_footsteps1
+OBJECT. cat_walk cat_jump from { x:2400,y:1650 } to { x:-1300 } time 2 persist true
+
+@none textDelay 2
+
+// cat walk left to right
+OBJECT. cat_walk cat_jump from { x:-1300,y:1650 } to { x:2400 } time 2 flipX persist true textDelay 2.5
+
+OBJECT. cat_walk cat_jump persist false
+SFX. stop
+
+ANIMEFFECT. trans0 animStart instant
+
+CHARACTERS. @Barney anim ANIM_SIT_TYPING_GENTLE emo EMO_ANGRY position right faceTo left
+OBJECT. desk desk_front from { x:550,y:1700 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+OBJECT. chair office_chair_front from { x:800,y:1680 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+ANIMEFFECT. zoom_pan scale 1.5 posX 500 posY 900 moveX 120 moveY 0 time 0
+
+@Barney bubbleOffsetY 50 Oh no not now Garplains!
+
+@None "I'm sorry did you say something Barney?"
+
+@Barney bubbleOffsetY 50 bubble think emo EMO_SCARED (Shoot I'm not muted!)
+@Barney bubbleOffsetY 50 emo EMO_AWKWARD Oh no it's nothing Mane, it's just my cat.
+@Barney bubbleOffsetY 50 emo EMO_NEUTRAL Anyways, you're saying?
+
+@None "As I was saying, The client just called."
+@None "They're concerned about the deployment timeline. They want to move the launch date up by two weeks."
+
+@Barney bubbleOffsetY 50 emo EMO_NEUTRAL Two weeks? That's...
+
+SFX. cat_meow1
+
+@Barney bubbleOffsetY 50 aggressive. <br>( | "color":"#FF3333", "format":"bold italic", "animEffect":"shake", "speed":2 | STOP Garplains! | RESET | )
+
+@None "..."
+
+@None "Everything okay over there, Barney?"
+CHOICE. 
+@Barney Shoo Garplains away
+{
+    @Barney Garplains! | "color":"#FF3333", "format":"bold italic" | Out now!
+
+    SFX. cat_meow_angry1
+
+    @Barney Yes! Sorry. Just... a slight, furry distraction.
+
+    JUMPTO. cat_distract
+}
+@Barney Ignore Garplains
+{
+    @Barney Yes! Sorry. So regarding the timeline...
+    JUMPTO. cat_keyboard
+}
+
+CONTINUE. cat_distract
+ANIMEFFECT. trans0 animStart instant
+CHARACTERS. @Barney anim ANIM_SIT_TYPING_GENTLE emo EMO_ANGRY position right faceTo left
+OBJECT. desk desk_front from { x:550,y:1700 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+OBJECT. chair office_chair_front from { x:800,y:1680 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+ANIMEFFECT. zoom_pan scale 1.5 posX 500 posY 900 moveX 120 moveY 0 time 0
+
+OBJECT. cat1 cat_sit from { x:1300,y:1700 } zIndex 1 persist true
+// spawn cat ^
+
+ANIMEFFECT. zoom_pan scale 2 moveX 700 moveY 950 time 0.5 textDelay 1
+
+ANIMEFFECT. zoom_out textDelay 0.5
+
+SFX. cat_meow1
+
+// jump from spawn to middle
+OBJECT. cat1 cat_jump to { x:590,y:960 } time 0.2 zIndex 1 persist true
+
+@none textDelay 0.1
+
+// jump from middle to lower left
+OBJECT. cat1 cat_jump from { x:590,y:960 } to { x:100,y:1700 } time 0.2 zIndex 1 persist true
+
+@none textDelay 0.1
+
+// slight focus to cat
+OBJECT. cat1 cat_sit from { x:100,y:1700 } flipX true zIndex 1 persist true
+
+@none textDelay 1
+
+// jump to outside left
+OBJECT. cat1 cat_sit from { x:100,y:1700 } flipX true zIndex 1 persist false
+OBJECT. cat2 cat_jump from { x:100,y:1700 } to { x:-1900,y:960 } time 0.1 zIndex 1 persist true textDelay 0.75
+JUMPTO. main_branch
+
+CONTINUE. cat_keyboard
+ANIMEFFECT. trans0 animStart instant
+CHARACTERS. @Barney anim ANIM_SIT_TYPING_GENTLE emo EMO_ANGRY position right faceTo left
+OBJECT. desk desk_front from { x:550,y:1700 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+OBJECT. chair office_chair_front from { x:800,y:1680 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+ANIMEFFECT. zoom_pan scale 1.5 posX 500 posY 900 moveX 120 moveY 0 time 0
+
+OBJECT. cat1 cat_sit from { x:1300,y:1700 } zIndex 1 persist true
+// spawn cat ^
+
+ANIMEFFECT. zoom_pan scale 2 moveX 700 moveY 950 time 0.5 textDelay 1
+
+ANIMEFFECT. zoom_out textDelay 0.5
+
+SFX. cat_meow1
+
+// jump from spawn to middle
+OBJECT. cat1 cat_jump from { x:1300,y:1700 } to { x:500,y:960 } time 0.25 zIndex 1 persist true textDelay 0.1
+
+// jump up and down, simulate cat typing to keyboard
+OBJECT. cat1 cat_jump to { x:500,y:970 } time 0.1 zIndex 1 persist true loop reverse
+
+@none textDelay 0.5
+
+// prepare to jump down
+OBJECT. cat1 cat_jump to { x:500,y:970 } time 0.1 zIndex 1 persist true
+
+@none textDelay 0.2
+
+// jump down to lower left
+OBJECT. cat1 cat_jump to { x:500,y:970 } time 0.1 zIndex 1 persist false
+OBJECT. cat2 cat_jump from { x:500,y:970 } to { x:100,y:1700 } time 0.25 zIndex 1 persist true
+
+@none textDelay 0.2
+
+// slight focus to cat
+OBJECT. cat2 cat_sit from { x:100,y:1700 } flipX true zIndex 1 persist true
+
+@none textDelay 1
+
+// jump to outside left
+OBJECT. cat2 cat_sit from { x:100,y:1700 } flipX true zIndex 1 persist false
+OBJECT. cat3 cat_jump from { x:100,y:1700 } to { x:-1900,y:960 } time 0.1 zIndex 1 persist true textDelay 0.75
+JUMPTO. main_branch
+
+CONTINUE. main_branch
+
+ANIMEFFECT. trans0 animStart instant
+
+CHARACTERS. @Barney anim ANIM_SIT_TYPING_GENTLE emo EMO_ANGRY position right faceTo left
+OBJECT. desk desk_front from { x:550,y:1700 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+OBJECT. chair office_chair_front from { x:800,y:1680 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+ANIMEFFECT. zoom_pan scale 1.5 posX 500 posY 900 moveX 120 moveY 0 time 0 textDelay 1
+
+@Barney anim ANIM_HIP_BOTH_HANDS Okay that's it Garplains. Come over here!
+@Barney Sorry Mane, one moment please.
+
+SFX. loop fast_footsteps1
+WALK_OUT. @Barney to left speed 5 type run
+
+@none textDelay 1
+SFX. stop
+
+SFX. cat_meow_angry1
+@none textDelay 0.5
+
+SFX. plate_breaking1
+ANIMEFFECT. hover shakeDistance 25 time 1 interval 0.02 easing Elastic.EaseInOut textDelay 1
+
+SFX. cat_meow_angry1
+@none textDelay 0.5
+
+SFX. plate_breaking2
+ANIMEFFECT. hover shakeDistance 25 time 1 interval 0.02 easing Elastic.EaseInOut textDelay 1
+
+SFX. plate_breaking1
+ANIMEFFECT. hover shakeDistance 25 time 1 interval 0.02 easing Elastic.EaseInOut textDelay 1
+
+SFX. cat_meow1
+
+@none textDelay 1
+
+SFX. loop slow_footsteps1
+
+WALK_IN. @Barney from left to right type stumble emo EMO_SOUR_EXTREME animAfter ANIM_WOUNDED
+
+@none textDelay 1
+SFX. stop
+
+@Barney anim ANIM_SIT_TYPING_REST Sorry for the interruption Mane. Where are we?
+
+@None "Barney, are you sure you're okay?"
+
+@Barney No worries, this is nothing.
+@Barney It's actually a good day today compared to others...
+@Barney anim ANIM_WOUNDED Let me just...
+@Barney anim ANIM_FALL textDelay 1
+
+@None "BARNEY!!!"
+
+END.

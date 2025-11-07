@@ -1,0 +1,783 @@
+CONTINUE. BranchMainChapter1
+
+SETTINGS. none nameTag null
+
+ANIMEFFECT. trans1 #000000
+BACKGROUND. desert_with_pyramid center
+OBJECT. rock_big1 rock_big1 from { x:-300,y:1500 } zIndex -1 persist true
+CHARACTERS. @Souper_Visor position right anim ANIM_CROSS emo EMO_ANGRY faceTo left ; @Barney position left anim ANIM_IDLE emo EMO_SAD
+
+@NONE textDelay 0.25
+
+@Souper_Visor anim ANIM_POINT_DOWNWARD_DIAGONAL Hurry up, Barney and finish that!
+
+ANIMEFFECT. zoom_pan moveX -600 time 0.25 easing Cubic.EaseIn textDelay 1
+
+ANIMEFFECT. zoom_pan moveX 0 time 0.25 easing Cubic.EaseIn textDelay 0.2
+
+@Souper_Visor anim ANIM_CROSS We don't have all day!
+@Souper_Visor anim ANIM_CROSS I'll leave it to you. I have somewhere more important to be.
+
+WALK_OUT. @Souper_Visor to right speed 5
+
+ANIMEFFECT. zoom_pan moveX -600 time 0.25 easing Cubic.EaseIn
+
+@Barney anim ANIM_STRIKE_OVERHEAD_TO_GROUND emo EMO_SAD faceTo left handheld hoe textDelay 0.35
+
+OBJECT. rock_big1 rock_big1 from { x:-300,y:1450 } to { x:-300,y:1500 } time 0.8 easing Elastic.EaseOut zIndex -1 persist true textDelay 1
+
+OBJECT. rock_big1 rock_big1 from { x:-300,y:1500 } zIndex -1 persist true
+
+@Barney anim ANIM_IDLE emo EMO_SAD handheld hoe textDelay 1
+
+@Barney anim ANIM_STRIKE_OVERHEAD_TO_GROUND emo EMO_SAD handheld hoe textDelay 0.35
+
+OBJECT. rock_big1 rock_big1 from { x:-300,y:1500 } zIndex -1 persist false
+
+OBJECT. rock_small1 rock_small1 from { x:-300,y:1300 } to { x:-600,y:1500,angle:720 } time 0.25 zIndex -1 easing Quadratic.EaseOut persist true
+OBJECT. rock_small2 rock_small2 from { x:-350,y:1300 } to { x:200,y:1500,angle:-360 } time 0.25 zIndex -1 easing Quadratic.EaseOut persist true
+OBJECT. rock_small3 rock_small3 from { x:-250,y:1300 } to { x:-300,y:1600,angle:540 } time 0.25 zIndex -1 easing Quadratic.EaseOut persist true
+OBJECT. rock_small4 rock_small4 from { x:-380,y:1300 } to { x:400,y:1600,angle:-720 } time 0.25 zIndex -1 easing Quadratic.EaseOut persist true
+OBJECT. rock_small5 rock_small2 from { x:-320,y:1300 } to { x:-200,y:1600,angle:450 } time 0.25 zIndex -1 easing Quadratic.EaseOut persist true
+OBJECT. rock_small6 rock_small3 from { x:-270,y:1300 } to { x:0,y:1500,angle:-540 } time 0.25 zIndex -1 easing Quadratic.EaseOut persist true
+OBJECT. rock_small7 rock_small1 from { x:-290,y:1300 } to { x:-800,y:1500,angle:360 } time 0.25 zIndex -1 easing Quadratic.EaseOut persist true
+OBJECT. rock_small8 rock_small2 from { x:-380,y:1300 } to { x:300,y:1500,angle:-450 } time 0.25 zIndex -1 easing Quadratic.EaseOut persist true textDelay 0.5
+
+@Barney anim ANIM_WOUNDED emo EMO_SAD handheld hoe textDelay 1
+OBJECT. rock_small1 rock_small1 from { x:-600,y:1500,angle:720 } zIndex -1 persist true
+OBJECT. rock_small2 rock_small2 from { x:200,y:1500,angle:-360 } zIndex -1 persist true
+OBJECT. rock_small3 rock_small3 from { x:-300,y:1600,angle:540 } zIndex -1 persist true
+OBJECT. rock_small4 rock_small4 from { x:400,y:1600,angle:-720 } zIndex -1 persist true
+OBJECT. rock_small5 rock_small2 from { x:-200,y:1600,angle:450 } zIndex -1 persist true
+OBJECT. rock_small6 rock_small3 from { x:0,y:1500,angle:-540 } zIndex -1 persist true
+OBJECT. rock_small7 rock_small1 from { x:-800,y:1500,angle:360 } zIndex -1 persist true
+OBJECT. rock_small8 rock_small2 from { x:300,y:1500,angle:-450 } zIndex -1 persist true
+
+WALK_OUT. @Barney to right speed 5
+
+@NONE (He hammers the rocks, one after another... endless.)
+
+ANIMEFFECT. trans1 #000000
+
+BACKGROUND. hd_home_living_room1 center
+CHARACTERS. @Barney position center anim ANIM_IDLE
+
+@Barney emo EMO_SAD What a tiring day. I deserve a cold can of Beer.
+
+WALK_OUT. @Barney to right speed 6
+
+ANIMEFFECT. trans0 animStart instant
+
+BACKGROUND. home_kitchen1 center
+
+WALK_IN. @Barney to left from left faceTo right animAfter ANIM_IDLE_REAR speed 4
+
+@none textDelay 1
+
+@Barney anim ANIM_IDLE_REAR handheld ceramic_mug textDelay 1
+
+@Barney anim ANIM_HOLD_MICROPHONE_RETRACT emo EMO_HAPPY handheld ceramic_mug textDelay 1
+
+WALK_OUT. @Barney to left speed 4
+
+ANIMEFFECT. trans0 animStart instant
+
+BACKGROUND. hd_home_living_room1 center
+WALK_IN. @Barney to center from right speed 6 handheld ceramic_mug
+
+@Barney handheld ceramic_mug anim ANIM_SIP_CUP emo EMO_HAPPY animSpeed 200 textDelay 1
+
+@Barney emo EMO_HAPPY Ah... that's the stuff.
+
+SFX. phone_ring
+
+@none textDelay 1
+
+@Barney anim ANIM_TALKPHONE textDelay 1
+
+@None "We have an exciting offer! Are you open mindeu?"
+SETCHAR. @Barney emo EMO_ANGRY
+
+@Barney NO!
+
+@Barney emo EMO_ANGRY anim ANIM_COMPLAIN How many is this now? Where do they get my number?
+@Barney emo EMO_NEUTRAL anim ANIM_SIP_CUP Just... relax.
+
+@none textDelay 1
+
+CONTINUE. BranchPhoneChoice
+
+ANIMEFFECT. trans0 animStart instant
+
+CHARACTERS. @Barney position center handheld ceramic_mug
+
+SFX. loop phone_ring delay 1
+
+@NONE bubble think (His phone rings again... an unknown number.)
+
+@Barney emo EMO_ANGRY What now?!
+CHOICE.
+@NONE Answer the call.
+{
+    JUMPTO. BranchGameOver1 
+}
+@NONE Ignore the call.
+{
+    JUMPTO. BranchContinueStory 
+}
+
+CONTINUE. BranchGameOver1
+SFX. stop
+@Barney anim ANIM_TALKPHONE textDelay 1
+@Barney Hello?! Who is this?!
+@none "We've been trying to reach you about your car's extended warranty."
+@Barney emo EMO_RAGE_EXTREME anim ANIM_RAGE AAAAARGH!
+@Barney anim ANIM_ARMS_WIDE_OPEN_LOOK_UPWARD textDelay 1.5
+@Barney anim ANIM_FAINTED textDelay 1
+
+ANIMEFFECT. trans1 #000000
+BACKGROUND. #000000
+
+@none bubble none textFontSize 90 tweenIn false tweenOut false | "color":"#fff", "format":"bold" | Your day has ended in misery.
+
+@none bubble none textFontSize 90 tweenIn false tweenOut false | "color":"#fff", "format":"bold" | Try again?
+CHOICE.
+@NONE Try again.
+{
+    JUMPTO. BranchPhoneChoice 
+}
+@NONE Quit.
+{
+    END.
+}
+
+CONTINUE. BranchContinueStory
+SFX. stop
+
+ANIMEFFECT. trans0 animStart instant
+BACKGROUND. hd_home_living_room1 center
+CHARACTERS. @Barney position center handheld ceramic_mug emo EMO_RAGE
+
+ANIMEFFECT. zoom_in @Barney
+@none textDelay 0.5
+@Barney emo EMO_RAGE anim ANIM_PUNCH_LUNGE animDelay 0.5 I'm sick of this!
+@Barney emo EMO_RAGE anim ANIM_POINT_DOWNWARD_DIAGONAL Know this... I will find you all... And you will not like what will happen.
+
+ANIMEFFECT. trans1 #000000
+// add another transition in order for instant zoom_pan to work
+ANIMEFFECT. trans0 animStart instant
+BACKGROUND. #000000
+// SFX. loop ominous
+
+PARTICLE. type matrix zIndex -1
+OBJECT. desk desk_front from { x:550,y:1700 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+OBJECT. chair office_chair_front from { x:800,y:1680 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+CHARACTERS. @Barney position right anim ANIM_SIT_TYPING_FURIOUS emo EMO_RAGE
+ANIMEFFECT. zoom_pan scale 2 posX 540 posY 960 moveX 900 moveY 0 time 0 textDelay 0.1
+
+ANIMEFFECT. zoom_pan scale 2 posX 540 posY 960 moveX -700 moveY 0 time 2
+ANIMEFFECT. trans1 #000000
+OBJECT. desk desk_front from { x:550,y:1700 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+OBJECT. chair office_chair_front from { x:800,y:1680 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+// add another transition in order for instant zoom_pan to work
+ANIMEFFECT. trans0 animStart instant
+BACKGROUND. #000000
+
+PARTICLE. type matrix zIndex -1
+CHARACTERS. @Barney position center anim ANIM_SIT_TYPING_FURIOUS_REAR faceTo left
+OBJECT. desk desk_rear from { x:450,y:1720 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+OBJECT. chair office_chair_rear from { x:750,y:1730 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+ANIMEFFECT. zoom_pan scale 2 posX 540 posY 960 moveX -500 moveY 0 time 0 textDelay 0.1
+
+ANIMEFFECT. zoom_pan scale 2 posX 540 posY 960 moveX 900 moveY 0 time 2
+ANIMEFFECT. trans1 #000000
+OBJECT. desk desk_rear from { x:450,y:1720 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+OBJECT. chair office_chair_rear from { x:750,y:1730 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+// add another transition in order for instant zoom_pan to work
+ANIMEFFECT. trans0 animStart instant
+BACKGROUND. #000000
+// SFX. loop ominous
+
+PARTICLE. type matrix zIndex -1
+OBJECT. desk desk_front from { x:550,y:1700 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+OBJECT. chair office_chair_front from { x:800,y:1680 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+CHARACTERS. @Barney position right anim ANIM_SIT_TYPING_FURIOUS emo EMO_RAGE
+
+ANIMEFFECT. zoom_pan scale 2 posX 540 posY 960 time 2 easing Quadratic.EaseOut textDelay 0.1
+
+@Barney anim ANIM_SIT_TYPING_FURIOUS Just... a... little... more... 
+@Barney anim ANIM_SIT_TYPING_REST emo EMO_SCARY Gotcha! 
+// SFX. stop
+
+ANIMEFFECT. trans1 #000000
+OBJECT. desk desk_front from { x:550,y:1700 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+OBJECT. chair office_chair_front from { x:800,y:1680 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+// BGM. bgm_rock_placeholder
+
+ANIMEFFECT. trans0 animStart instant
+BACKGROUND. armory1 center
+
+CHARACTERS. @Barney position center anim ANIM_IDLE_REAR faceTo left
+ANIMEFFECT. zoom_pan scale 1 posX 540 posY 960 moveX 900 moveY 0 time 0 textDelay 0.1
+
+ANIMEFFECT. zoom_pan moveX 0 moveY 0 time 1.5 textDelay 1
+
+@Barney anim ANIM_IDLE_REAR handheld rifle1 textDelay 1
+
+@Barney anim ANIM_IDLE emo EMO_ANGRY handheld rifle1 textDelay 1
+
+@Barney anim ANIM_RIFLE_HOLD_NORMAL_IDLE emo EMO_SNEAKY handheld rifle1 textDelay 1
+
+@Barney anim ANIM_RIFLE_HOLD_SIDEWAYS_IDLE emo EMO_SNEAKY handheld rifle1 textDelay 1
+
+@Barney Time to go to work.
+
+WALK_OUT. @Barney to left speed 3 animDuring ANIM_RUN_WIDE_HAND_CLOSE
+
+ANIMEFFECT. trans1 #000000
+BACKGROUND. airport_boarding1 center
+
+WALK_IN. @Barney from left to center scale 0.75 animAfter ANIM_IDLE_REAR
+
+@NONE (He traveled across the globe...)
+
+ANIMEFFECT. trans1 #000000
+BACKGROUND. forest1 center
+
+PARTICLE. type rain zIndex 1
+WALK_IN. @Barney from left to center animDuring ANIM_STUMBLE speed 2 animAfter ANIM_IDLE_REAR faceToAfter right
+@NONE (...through the vicious jungle...)
+PARTICLE. type rain zIndex 1
+
+ANIMEFFECT. trans1 #000000
+BACKGROUND. desert_sunset center
+
+PARTICLE. type rain color #e0712e zIndex 1
+WALK_IN. @Barney from left to center animDuring ANIM_RUN_WIDE_HAND_CLOSE faceToAfter right
+WALK_OUT. @Barney to right animDuring ANIM_RUN_WIDE_HAND_CLOSE
+@NONE (...the harsh desert...)
+PARTICLE. type rain color #e0712e zIndex 1
+
+ANIMEFFECT. trans1 #000000
+BACKGROUND. desert_with_pyramid_winter center
+
+PARTICLE. type snow zIndex 1
+WALK_IN. @Barney from left to center animDuring ANIM_WALK_SHIVER_EXTREME speed 2 faceToAfter right
+WALK_OUT. @Barney to right animDuring ANIM_WALK_SHIVER_EXTREME speed 2
+@NONE (...and the extreme cold...)
+PARTICLE. type snow zIndex 1
+
+ANIMEFFECT. trans1 #000000
+BACKGROUND. #000000
+
+@none bubble none textFontSize 90 tweenIn false tweenOut false | "color":"#fff", "format":"bold" | Until finally....
+
+ANIMEFFECT. trans1 #000000
+BACKGROUND. building_lobby1 center
+// SFX. explosion_placeholder
+
+ANIMEFFECT. hover posX 0 posY 0 scale 1 shakeDistance 20 time -1 interval 0.04
+OBJECT. tank tank1 from { x:-3500,y:1400,scaleX:2,scaleY:2 } to { x:-600,y:1000,angle:-45,scaleX:2,scaleY:2 } time 0.5 flipX true textDelay 0.5
+
+OBJECT. tank tank1 from { x:-600,y:1000,angle:-45,scaleX:2,scaleY:2 } to { x:0,y:1400,angle:0,scaleX:2,scaleY:2 } time 0.5 flipX true persist true easing Bounce.EaseOut
+ANIMEFFECT. hover remove true
+
+@NONE (A tank crashes through the wall!)
+
+ANIMEFFECT. trans0 animStart instant
+OBJECT. tank tank1 from { x:0,y:1400,angle:0,scaleX:2,scaleY:2 } flipX true persist true
+
+ANIMEFFECT. trans0 animStart instant
+BACKGROUND. #000000
+
+@none bubble none textFontSize 90 tweenIn false tweenOut false | "color":"#fff", "format":"bold" | "Party's over."
+
+ANIMEFFECT. trans0
+
+WINDOWBOXING. top color #000000 thickness 1920 zIndex 1
+BACKGROUND. building_lobby1 center
+CHARACTERS. @Barney position center anim ANIM_IDLE emo EMO_RAGE faceTo right
+
+WINDOWBOXING. top color #000000 thickness 1920 zIndex 1
+@none textDelay 0.15
+
+@Barney anim ANIM_LAND handheld rifle1 I'm HERE
+
+WALK_OUT. @Barney to right animDuring ANIM_RUN_WIDE_HAND_CLOSE
+
+ANIMEFFECT. trans0 animStart instant
+
+CHARACTERS. @Barney position center faceTo right handheld rifle1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE emo EMO_RAGE ; @Scammer_1 posX 4000 anim ANIM_IDLE ; @Scammer_2 posX 4000 anim ANIM_IDLE
+ANIMEFFECT. hover posX 1500 posY 1200 scale 1.8 shakeDistance 20 time -1 interval 0.04 // FIRING LOOP STARTS
+
+SFX. m60_gun_10x delay 0.2
+
+@Barney emo EMO_INSANE faceTo right anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash1 muzzle_flash1_small from { x:-350,y:910,scaleX:2,scaleY:2 } flipX true persist true
+OBJECT. muzzle_smoke1 muzzle_smoke1 from { x:-300,y:890,scaleX:2.2,scaleY:2.2 } flipX true persist true
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:220,y:920 } to { x:1500,y:-700,angle:1080 } time 0.5 zIndex 1 persist true
+OBJECT. rock_big1 rock_big2 from { x:1100,y:1400,scaleX:1.2,scaleY:1.2 } persist true zIndex 1 // SET THE ROCK IN FRONT FOR A NICER WALKOUT TOWARDS END OF SCENE
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash1 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke1 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash2 muzzle_flash1_small from { x:1400,y:890,scaleX:2,scaleY:2 } persist true
+OBJECT. muzzle_smoke2 muzzle_smoke1 from { x:1360,y:890,scaleX:2.2,scaleY:2.2 } persist true
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:802,y:890,scaleX:0.8,scaleY:0.8 } to { x:-500,y:-802,angle:1080 } time 0.9 zIndex 1 persist true
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash2 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke2 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash3 muzzle_flash1_small from { x:1400,y:890,scaleX:2,scaleY:2 } persist true
+OBJECT. muzzle_smoke3 muzzle_smoke1 from { x:1360,y:890,scaleX:2.2,scaleY:2.2 } persist true
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:802,y:890,scaleX:0.8,scaleY:0.8 } to { x:-400,y:-100,angle:1080 } time 1 zIndex 1 persist true
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash3 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke3 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash4 muzzle_flash1_small from { x:1400,y:890,scaleX:2,scaleY:2 } persist true
+OBJECT. muzzle_smoke4 muzzle_smoke1 from { x:1360,y:890,scaleX:2.2,scaleY:2.2 } persist true
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:802,y:890,scaleX:0.8,scaleY:0.8 } to { x:-400,y:100,angle:1080 } time 0.8 zIndex 1 persist true
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash4 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke4 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash5 muzzle_flash1_small from { x:1400,y:890,scaleX:2,scaleY:2 } persist true
+OBJECT. muzzle_smoke5 muzzle_smoke1 from { x:1360,y:890,scaleX:2.2,scaleY:2.2 } persist true
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:802,y:890,scaleX:0.8,scaleY:0.8 } to { x:-200,y:-302,angle:1080 } time 0.9 zIndex 1 persist true
+
+ANIMEFFECT. hover remove true
+
+SFX. bullet_casing_fall1
+
+SFX. bullet_casing_fall2 delay 1
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.3
+OBJECT. muzzle_flash5 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke5 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.2
+OBJECT. bullet_casing1 bullet_casing1_small persist false  // FIRING LOOP ENDS
+
+ANIMEFFECT. hover posX 1500 posY 1200 scale 1.8 shakeDistance 20 time -1 interval 0.04 // FIRING LOOP STARTS
+
+SFX. m60_gun_10x
+
+@Barney faceTo right anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash1 muzzle_flash1_small from { x:1400,y:890,scaleX:2,scaleY:2 } persist true
+OBJECT. muzzle_smoke1 muzzle_smoke1 from { x:1360,y:890,scaleX:2.2,scaleY:2.2 } persist true
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:802,y:890,scaleX:0.8,scaleY:0.8 } to { x:-500,y:-700,angle:1080 } time 0.5 zIndex 1 persist true
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash1 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke1 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash2 muzzle_flash1_small from { x:1400,y:890,scaleX:2,scaleY:2 } persist true
+OBJECT. muzzle_smoke2 muzzle_smoke1 from { x:1360,y:890,scaleX:2.2,scaleY:2.2 } persist true
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:802,y:890,scaleX:0.8,scaleY:0.8 } to { x:-500,y:-802,angle:1080 } time 0.9 zIndex 1 persist true
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash2 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke2 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash3 muzzle_flash1_small from { x:1400,y:890,scaleX:2,scaleY:2 } persist true
+OBJECT. muzzle_smoke3 muzzle_smoke1 from { x:1360,y:890,scaleX:2.2,scaleY:2.2 } persist true
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:802,y:890,scaleX:0.8,scaleY:0.8 } to { x:-400,y:-100,angle:1080 } time 1 zIndex 1 persist true
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash3 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke3 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash4 muzzle_flash1_small from { x:1400,y:890,scaleX:2,scaleY:2 } persist true
+OBJECT. muzzle_smoke4 muzzle_smoke1 from { x:1360,y:890,scaleX:2.2,scaleY:2.2 } persist true
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:802,y:890,scaleX:0.8,scaleY:0.8 } to { x:-400,y:100,angle:1080 } time 0.8 zIndex 1 persist true
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash4 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke4 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash5 muzzle_flash1_small from { x:1400,y:890,scaleX:2,scaleY:2 } persist true
+OBJECT. muzzle_smoke5 muzzle_smoke1 from { x:1360,y:890,scaleX:2.2,scaleY:2.2 } persist true
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:802,y:890,scaleX:0.8,scaleY:0.8 } to { x:-200,y:-302,angle:1080 } time 0.9 zIndex 1 persist true
+
+ANIMEFFECT. hover remove true
+
+SFX. bullet_casing_fall1
+
+SFX. bullet_casing_fall2 delay 1
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.5
+OBJECT. muzzle_flash5 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke5 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Barney anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.2
+OBJECT. bullet_casing1 bullet_casing1_small persist false  // FIRING LOOP ENDS
+
+ANIMEFFECT. zoom_out
+
+WALK_OUT. @Barney to right animDuring ANIM_RUN_WIDE_HAND_CLOSE speed 2 animSpeed 30
+//====================
+
+ANIMEFFECT. trans0 animStart instant
+
+CHARACTERS. @Scammer_1 position center faceTo left handheld rifle_ak47_1 anim ANIM_RIFLE_HOLD_PRONE_IDLE emo EMO_SCARED ; @Barney posX -2000
+OBJECT. rock_big1 rock_big2 from { x:0,y:1400,scaleX:1.2,scaleY:1.2 } persist true zIndex -1
+
+SFX. m60_gun_10x
+
+SFX. bullet_fly1 delay 0.1
+
+SFX. bullet_fly2 delay 0.3
+
+SFX. bullet_fly3 delay 0.5
+
+SFX. bullet_fly2 delay 0.7
+
+SFX. bullet_fly1 delay 0.9
+
+ANIMEFFECT. hover posX 400 posY 1500 scale 1.8 shakeDistance 20 time 0.8 interval 0.04
+OBJECT. flare1 flare4 from { x:-2000,y:100 } to { x:4000 } time 0.6 persist true zIndex 1
+OBJECT. flare2 flare6 from { x:-2000,y:1200 } to { x:6000 } time 1.2 persist true zIndex 1
+OBJECT. flare3 flare5 from { x:-2000,y:1300 } to { x:4000 } time 1 persist true zIndex 1
+OBJECT. flare4 flare6 from { x:-2000,y:400 } to { x:4000 } time 0.95 persist true zIndex 1
+OBJECT. flare5 flare5 from { x:-2000,y:500 } to { x:4200 } time 0.5 persist true zIndex 1
+OBJECT. flare6 flare4 from { x:-2000,y:1400 } to { x:4000 } time 0.8 persist true zIndex 1
+OBJECT. flare7 flare4 from { x:-2000,y:700 } to { x:4000 } time 0.6 persist true zIndex 1
+OBJECT. flare8 flare6 from { x:-2000,y:1800 } to { x:5000 } time 1.2 persist true zIndex 1
+OBJECT. flare9 flare5 from { x:-2000,y:900 } to { x:4000 } time 0.7 persist true zIndex 1
+OBJECT. flare10 flare6 from { x:-2000,y:1000 } to { x:5000 } time 0.6 persist true zIndex 1
+@Scammer_1 textDelay 1
+
+SFX. m60_gun_10x
+
+SFX. bullet_fly1 delay 0.3
+
+SFX. bullet_fly2 delay 0.6
+
+SFX. bullet_fly3 delay 0.9
+
+SFX. bullet_fly2 delay 1.2
+
+SFX. bullet_fly1 delay 1.5
+
+ANIMEFFECT. hover posX 1500 posY 1200 scale 1 shakeDistance 20 time 0.3 interval 0.04
+OBJECT. bullet_hole2 bullet_hole_small1 from { x:-120,y:1400 } persist true zIndex 1
+@Scammer_1 textDelay 0.3
+
+ANIMEFFECT. hover posX 1500 posY 1200 scale 1 shakeDistance 20 time 0.25 interval 0.04
+OBJECT. bullet_hole3 bullet_hole_small1 from { x:-20,y:1450,scaleX:1.2,scaleY:1.2 } persist true zIndex 1
+@Scammer_1 textDelay 0.25
+
+ANIMEFFECT. hover posX 1500 posY 1200 scale 1 shakeDistance 20 time 0.1 interval 0.04
+OBJECT. bullet_hole4 bullet_hole_small1 from { x:130,y:1230 } persist true zIndex 1
+@Scammer_1 textDelay 0.1
+
+ANIMEFFECT. hover posX 1500 posY 1200 scale 1 shakeDistance 20 time 0.3 interval 0.04
+OBJECT. bullet_hole5 bullet_hole_small1 from { x:-50,y:1500,scaleX:1.4,scaleY:1.4 } persist true zIndex 1
+@Scammer_1 textDelay 0.3
+
+SFX. m60_gun_10x
+
+ANIMEFFECT. zoom_pan scale 1.2 moveX 100 moveY 0 time 0.2
+
+WALK_IN. @Scammer_2 emo EMO_RAGE_EXTREME animDuring ANIM_RUN_WIDE_HAND_CLOSE animAfter ANIM_RIFLE_HOLD_CROUCH_IDLE handheld rifle_sniper_camouflage1 time 1.5 from right to right
+
+SFX. m60_gun_10x delay 1
+
+SFX. bullet_fly1 delay 0.1
+
+SFX. bullet_fly2 delay 0.4
+
+SFX. bullet_fly3 delay 0.6
+
+SFX. bullet_fly2 delay 0.8
+
+SFX. bullet_fly1 delay 1.2
+
+SFX. bullet_fly1 delay 1.5
+
+SFX. m60_gun_10x
+
+SETCHAR. @Scammer_2 anim ANIM_FALL_KICKED_BACKWARDS_OVER_OBJECT emo EMO_EYE_CLOSED
+// ANIMEFFECT. hover posX 1500 posY 1200 scale 1 shakeDistance 20 time 0.2 interval 0.04
+OBJECT. bullet_hole1 bullet_hole_small1 from { x:-200,y:1200 } persist true zIndex 1
+// SINGLE_PARTICLE. blood1 blood_drip posX 250 posY 700 size 14 zIndex 1 persist true
+// SINGLE_PARTICLE. blood2 blood_drip posX 280 posY 880 size 16 delay 0.3 zIndex 1 persist true
+// SINGLE_PARTICLE. blood3 blood_drip posX 200 posY 920 size 12 delay 0.6 zIndex 1 persist true
+
+@Scammer_1 textDelay 3
+
+ANIMEFFECT. trans0 animStart instant
+
+OBJECT. rock_big1 rock_big2 from { x:0,y:1400,scaleX:1.2,scaleY:1.2 } persist true zIndex -1
+CHARACTERS. @Scammer_1 position center faceTo left handheld rifle_ak47_1 anim ANIM_RIFLE_HOLD_PRONE_IDLE emo EMO_SCARED ; @Scammer_2 position right anim ANIM_FALL_KICKED_BACKWARDS_OVER_OBJECT emo EMO_EYE_CLOSED @Barney posX -2000
+ANIMEFFECT. zoom_pan posX -400 posY 1200 scale 1.8 time -1
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 1
+
+ANIMEFFECT. hover posX -400 posY 1200 scale 1.8 shakeDistance 20 time -1 interval 0.04 // FIRING LOOP STARTS
+
+SFX. m60_gun_10x delay 0.2
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash1 muzzle_flash1_small from { x:-350,y:910,scaleX:2,scaleY:2 } flipX true persist true
+OBJECT. muzzle_smoke1 muzzle_smoke1 from { x:-300,y:890,scaleX:2.2,scaleY:2.2 } flipX true persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:220,y:920,scaleX:0.8,scaleY:0.8 } to { x:1500,y:-700,angle:1080 } time 0.5 zIndex 1 persist true
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash1 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke1 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash2 muzzle_flash1_small from { x:-350,y:910,scaleX:2,scaleY:2 } flipX true persist true
+OBJECT. muzzle_smoke2 muzzle_smoke1 from { x:-300,y:890,scaleX:2.2,scaleY:2.2 } flipX true persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:220,y:920,scaleX:0.8,scaleY:0.8 } to { x:1500,y:-700,angle:1080 } time 0.9 zIndex 1 persist true
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash2 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke2 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash3 muzzle_flash1_small from { x:-350,y:910,scaleX:2,scaleY:2 } flipX true persist true
+OBJECT. muzzle_smoke3 muzzle_smoke1 from { x:-300,y:890,scaleX:2.2,scaleY:2.2 } flipX true persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:220,y:920,scaleX:0.8,scaleY:0.8 } to { x:1400,y:-100,angle:1080 } time 1 zIndex 1 persist true
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash3 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke3 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash4 muzzle_flash1_small from { x:-350,y:910,scaleX:2,scaleY:2 } flipX true persist true
+OBJECT. muzzle_smoke4 muzzle_smoke1 from { x:-300,y:890,scaleX:2.2,scaleY:2.2 } flipX true persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:220,y:920,scaleX:0.8,scaleY:0.8 } to { x:1400,y:-100,angle:1080 } time 0.8 zIndex 1 persist true
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.08
+OBJECT. muzzle_flash4 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke4 muzzle_smoke1 persist false
+OBJECT. rifle_ejector1 rifle_ejector1 from { x:802,y:906 } persist false
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.05
+OBJECT. muzzle_flash5 muzzle_flash1_small from { x:-350,y:910,scaleX:2,scaleY:2 } flipX true persist true
+OBJECT. muzzle_smoke5 muzzle_smoke1 from { x:-300,y:890,scaleX:2.2,scaleY:2.2 } flipX true persist true
+OBJECT. bullet_casing1 bullet_casing1_small from { x:220,y:920,scaleX:0.8,scaleY:0.8 } to { x:1200,y:-300,angle:1080 } time 0.9 zIndex 1 persist true
+
+ANIMEFFECT. hover remove true
+
+SFX. bullet_casing_fall1
+
+SFX. bullet_casing_fall2 delay 1
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.3
+OBJECT. muzzle_flash5 muzzle_flash1_small persist false
+OBJECT. muzzle_smoke5 muzzle_smoke1 persist false
+
+@Scammer_1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE textDelay 0.2
+OBJECT. bullet_casing1 bullet_casing1_small persist false  // FIRING LOOP ENDS
+@Scammer_1 textDelay 1
+
+SFX. m60_gun_10x
+
+SFX. bullet_fly1 delay 0.1
+
+SFX. bullet_fly2 delay 0.3
+
+SFX. bullet_fly3 delay 0.5
+
+SFX. bullet_fly2 delay 0.7
+
+SFX. bullet_fly1 delay 0.9
+
+ANIMEFFECT. hover posX 400 posY 1500 scale 1.8 shakeDistance 20 time 0.8 interval 0.04
+OBJECT. flare1 flare4 from { x:-2000,y:100 } to { x:4000 } time 0.6 persist true zIndex 1
+OBJECT. flare2 flare6 from { x:-2000,y:1200 } to { x:6000 } time 1.2 persist true zIndex 1
+OBJECT. flare3 flare5 from { x:-2000,y:1300 } to { x:4000 } time 1 persist true zIndex 1
+OBJECT. flare4 flare6 from { x:-2000,y:400 } to { x:4000 } time 0.95 persist true zIndex 1
+OBJECT. flare5 flare5 from { x:-2000,y:500 } to { x:4200 } time 0.5 persist true zIndex 1
+OBJECT. flare6 flare4 from { x:-2000,y:1400 } to { x:4000 } time 0.8 persist true zIndex 1
+OBJECT. flare7 flare4 from { x:-2000,y:700 } to { x:4000 } time 0.6 persist true zIndex 1
+OBJECT. flare8 flare6 from { x:-2000,y:1800 } to { x:5000 } time 1.2 persist true zIndex 1
+OBJECT. flare9 flare5 from { x:-2000,y:900 } to { x:4000 } time 0.7 persist true zIndex 1
+OBJECT. flare10 flare6 from { x:-2000,y:1000 } to { x:5000 } time 0.6 persist true zIndex 1
+
+ANIMEFFECT. zoom_out
+
+@Scammer_1 anim ANIM_FALL_KICKED_BACKWARDS_OVER_OBJECT emo EMO_EYE_CLOSED textDelay 3
+
+ANIMEFFECT. trans0 animStart instant
+
+OBJECT. rock_big1 rock_big2 from { x:1100,y:1400,scaleX:1.2,scaleY:1.2 } persist true zIndex 1 // SET THE ROCK IN FRONT FOR A NICER WALKOUT TOWARDS END OF SCENE
+CHARACTERS. @Barney position center faceTo right handheld rifle1 anim ANIM_RIFLE_HOLD_CROUCH_IDLE emo EMO_RAGE ; @Scammer_1 posX 4000 anim ANIM_IDLE ; @Scammer_2 posX 4000 anim ANIM_IDLE
+
+@Barney textDelay 0.5
+
+WALK_OUT. @Barney to right animDuring ANIM_RUN_WIDE_HAND_CLOSE speed 2 animSpeed 30
+
+ANIMEFFECT. trans0 animStart instant
+
+BACKGROUND. ceo_office3 center
+CHARACTERS. @Scammer_Ceo position right anim ANIM_IDLE_HANDS_DOWN_LEGS_WIDE emo EMO_SNEAKY
+
+WALK_IN. @Barney to left animDuring ANIM_RUN_WIDE_HAND_CLOSE animAfter ANIM_IDLE_HANDS_DOWN_LEGS_WIDE emo EMO_RAGE speed 2 animSpeed 30
+
+@Barney anim ANIM_FIST_DOWN This ends now!!
+
+@Barney anim ANIM_KICK_PUSH animSpeed 150 textDelay 0.45
+SETCHAR. @Scammer_Ceo anim ANIM_FLY_BACKWARDS_FLOATING emo EMO_PAIN_EXTREME animDelay 0.5
+
+ANIMEFFECT. trans0 animStart instant
+
+BACKGROUND. ceo_office3 center type scroll speed 80 direction left
+CHARACTERS. @Scammer_Ceo position center anim ANIM_FLY_BACKWARDS_FLOATING emo EMO_PAIN_EXTREME
+
+@none textDelay 0.1
+
+BACKGROUND. ceo_office3 center
+@Scammer_Ceo anim ANIM_FALL_KICKED_BACKWARDS textDelay 0.5
+
+ANIMEFFECT. trans0 animStart instant
+
+BACKGROUND. ceo_office3 center
+CHARACTERS. @Barney position left anim ANIM_KICK_PUSH emo EMO_RAGE
+
+WALK_OUT. @Barney to right animDuring ANIM_RUN_WIDE_HAND_CLOSE speed 2 animSpeed 30
+
+ANIMEFFECT. trans0 animStart instant
+
+CHARACTERS. @Scammer_Ceo posX 0 anim ANIM_FALL_KICKED_BACKWARDS_UNCONSCIOUS emo EMO_PAIN_EXTREME faceTo left
+
+WALK_IN. @Barney to left animDuring ANIM_RUN_WIDE_HAND_CLOSE emo EMO_RAGE emoAfter EMO_RAGE speed 2 animSpeed 30
+
+ANIMEFFECT. trans0 animStart instant
+
+CHARACTERS. @Barney position left anim ANIM_PUNCH_ON_KNEES emo EMO_RAGE ; @Scammer_Ceo position right anim ANIM_LAY_STRUGGLE_HARD emo EMO_HORRIFIED faceTo left
+
+@none textDelay 2
+
+ANIMEFFECT. trans1 #000000
+
+BACKGROUND. #000000
+
+@none bubble none textFontSize 30 tweenIn false tweenOut false | "color":"#fff", "format":"bold" | After hours of one sided battle. Barney claimed victory.
+//INSERT CHAPTER UNLOCK HERE
+
+CONTINUE. BranchChapterNearEnd
+ANIMEFFECT. trans1 #000000
+
+BACKGROUND. hd_home_living_room1 center
+
+WALK_IN. @Barney to center from right speed 6 handheld ceramic_mug
+
+@Barney handheld ceramic_mug anim ANIM_SIP_CUP emo EMO_HAPPY animSpeed 200 textDelay 1
+
+@Barney emo EMO_HAPPY Finally... peace and quiet.
+
+SFX. loop phone_ring delay 1
+
+@NONE bubble think (His phone rings again... an unknown number.)
+
+@Barney emo EMO_ANGRY anim ANIM_IDLE What now?!
+CHOICE.
+@NONE Answer the call.
+{
+    JUMPTO. BranchGameOver2 
+}
+@NONE Ignore the call.
+{
+    JUMPTO. BranchChapterEnd 
+}
+
+CONTINUE. BranchGameOver2
+SFX. stop
+@Barney anim ANIM_TALKPHONE textDelay 1
+@Barney Hello?! Who is this?!
+@none "Hello Barney, it's us again."
+@Barney emo EMO_RAGE_EXTREME WHAT!?!
+@none "You don't seem to learn your lesson."
+
+ANIMEFFECT. hover shakeDistance 10 time -1 interval 0.04
+@Barney emo EMO_RAGE_EXTREME anim ANIM_RAGE AAAAAAAAAAARGH!
+@Barney anim ANIM_ARMS_WIDE_OPEN_LOOK_UPWARD textDelay 1.5
+
+WALK_OUT. @Barney to left animDuring ANIM_RUN_WIDE_HAND_CLOSE
+
+ANIMEFFECT. trans1 #000000
+BACKGROUND. #000000
+
+@none bubble none textFontSize 70 tweenIn false tweenOut false | "color":"#fff", "format":"bold" | Do not answer calls from unknown number.
+
+@none bubble none textFontSize 70 tweenIn false tweenOut false | "color":"#fff", "format":"bold" | Try again?
+CHOICE.
+@NONE Try again.
+{
+    JUMPTO. BranchChapterNearEnd 
+}
+@NONE Quit.
+{
+    END.
+}
+
+CONTINUE. BranchChapterEnd
+// maybe insert calm bgm here
+
+ANIMEFFECT. trans0 animStart instant
+
+BACKGROUND. hd_home_living_room1 center
+CHARACTERS. @Barney position center anim ANIM_IDLE
+
+@Barney anim ANIM_MOUTH_THINK textDelay 2
+
+SFX. stop
+
+@Barney anim ANIM_IDLE I choose peace... I choose quiet...
+@Barney handheld ceramic_mug anim ANIM_SIP_CUP emo EMO_HAPPY animSpeed 150 textDelay 2
+
+SFX. loop phone_ring
+
+@noen textDelay 1
+
+@Barney anim ANIM_HIP_BOTH_HANDS emo EMO_RAGE textDelay 2
+
+ANIMEFFECT. trans0 animStart instant
+
+BACKGROUND. #000000
+
+@none bubble none textFontSize 54 tweenIn false tweenOut false | "color":"#fff", "format":"bold" | To Be Continued.
+
+SFX. stop
+
+END. #000000

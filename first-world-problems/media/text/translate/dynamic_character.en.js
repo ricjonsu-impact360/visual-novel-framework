@@ -1,0 +1,1 @@
+_LANG["en"]["dynamic_character"]={};

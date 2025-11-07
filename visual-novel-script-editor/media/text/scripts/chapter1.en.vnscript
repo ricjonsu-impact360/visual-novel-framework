@@ -1,0 +1,162 @@
+BACKGROUND. office center
+CHARACTERS. @AMY position center
+ANIMEFFECT. input_name
+
+// CHARACTERS. @JACK_RIPPER position center anim ANIM_HIP emo EMO_SAD faceTo right
+// @JACK_RIPPER where's she?
+
+// SETCHAR. @JACK_RIPPER faceTo left
+WALK_IN. @JACK_RIPPER from right to right anim ANIM_CROSS
+SETCHAR. @AMY anim ANIM_HIP emo EMO_SAD
+@JACK_RIPPER text_delay 2 ah finally you are here {beautiful}.
+
+@amy bubble think Hey {JACK_RIPPER}! I can't believe to meet | "color":"#FF3333", "format":"bold italic" | you | RESET | here!
+@amy I lay down on the bed
+
+@AMY I prefer to date
+ANIMEFFECT. love_gender
+@NONE Men
+@NONE Women
+
+ANIMEFFECT. love_gender_end
+@AMY love gender is done.
+
+ANIMEFFECT. trans1 color #ffffff
+// ANIMEFFECT. text_chat name CHAPTER1_ID1
+
+CHARACTERS. @AMY position center ; @JACK_RIPPER position right outfit School
+
+@JACK_RIPPER anim ANIM_HIP that's it for the demo.
+
+@AMY anim ANIM_MOUTH anim_delay 2 We'll try freeze frame for {JACK RIPPER}
+
+ANIMEFFECT. freeze_frame type 3 bg office @JACK_RIPPER anim ANIM_MOUTH handheld bat faceTo left {JACK RIPPER}, Love Interest 1
+
+@AMY this is an example for zoom in effect.
+ANIMEFFECT. zoom_in @AMY
+
+ANIMEFFECT. zoom_out
+@AMY now it’s zoom out effect
+
+ANIMEFFECT. pan panEnd left
+
+ANIMEFFECT. pan panEnd center
+
+@NONE just now is the pan effect
+@AMY now let’s try zoom_pan effect. This is moving X to 400.
+ANIMEFFECT. zoom_pan moveX 400 time 1
+
+@NONE back to the center
+ANIMEFFECT. zoom_pan moveX 0 time 1
+
+@AMY currently scale 2 on my feet
+ANIMEFFECT. zoom_pan scale 2 posX 360 posY 1280 time 1
+
+@AMY then moving up
+ANIMEFFECT. zoom_pan moveY -1000 time 3
+
+@AMY Now let's revert to normal state
+ANIMEFFECT. zoom_pan scale 1 moveY 0
+
+@amy anim ANIM_IDLE Trying loop sfx here
+SFX. loop calling
+
+SFX. stop
+SETCHAR. @amy anim ANIM_MOUTH emo EMO_HAPPY
+@JACK_RIPPER anim ANIM_HIP Stopping the sound. Next 2 ball will come in.
+// SETCHAR. @amy anim ANIM_MOUTH emo EMO_HAPPY
+
+@AMY See 1 ball is removed after tween. We can tween the remaining ball to right.
+OBJECT. basketball ball from { x:0,y:0, scaleX:1,scaleY:1 } to { x:0,y: 400 } time 1 easing Bounce.EaseOut pivot { x:0.5, y:0.5 } zIndex 1 remove true flip { x:true }
+OBJECT. ball2 ball to { x:0 } from { x:800,y:200 } time 0.5 zIndex 1 delay 0.2
+
+@JACK_RIPPER The ball still remain after tween.
+SETCHAR. @amy anim ANIM_GIGGLE emo EMO_SAD
+OBJECT. ball2 ball to { x:300 } time 3
+
+@AMY all objects will be removed in transition. I'm adding another ball
+OBJECT. ball2 ball
+OBJECT. basketball ball from { x:300, y:300 }
+
+@JACK_RIPPER there will be 2 balls coming in. 1 ball will be removed after tween is done.
+OBJECT. basketball ball from { x:0,y:0, scaleX:1,scaleY:1 } to { x:0,y: 400 } time 1 easing Bounce.EaseOut pivot { x:0.5, y:0.5 } zIndex 1 remove true flip { x:true }
+OBJECT. ball2 ball to { x:0 } from { x:800,y:200 } time 0.5 zIndex 1 delay 0.2
+
+@JACK_RIPPER now the remaining ball will directly moved to other position.
+OBJECT. ball2 ball from { x:200 }
+
+@JACK_RIPPER if you want to keep the ball in the scene, it should be declare even if there’s no movement.
+OBJECT. ball2 ball
+
+@JACK_RIPPER otherwise it will be disappear like in this dialog.
+
+ANIMEFFECT. trans0
+
+BACKGROUND. forest_sunny center
+CHARACTERS. @amy position center ; @jack_ripper position right
+SFX. calling
+@JACK_RIPPER emo EMO_SHOCK Now playing calling sfx and showing options.
+CHOICE.
+@amy This is the first choice.
+{ COST. virtualCurrency1 200 REWARD. virtualCurrency2 50
+  @JACK_RIPPER emo EMO_ANGRY Response of 1st choice.
+  
+  ANIMEFFECT. flashback #ffffff
+  
+  @AMY anim ANIM_ANGRY Still inside the 1st choice.
+} 
+@AMY 2nd choice is here.
+{ rv true
+  @JACK_RIPPER anim ANIM_HIP Response of 2nd choice.
+  @AMY anim ANIM_GIGGLE Yep still inside 2nd choice.
+  
+  ANIMEFFECT. flashback #ffffff
+
+  @JACK_RIPPER anim ANIM_MOUTH need some dialog here after flashback and before jump sceneID
+  JUMPTO. branch1
+}
+@AMY Should we add more choice?
+{ REWARD. virtualCurrency1 5
+  ANIMEFFECT. flashback #ffffff
+
+  @JACK_RIPPER anim ANIM_HIP Am I in 3rd choice?
+  @AMY anim ANIM_GIGGLE correct this is in 3rd choice.
+}
+
+REWARD. virtualCurrency1 400
+@AMY Now back to the main dialog
+@JACK_RIPPER I hope this is correct.
+JUMPTO. skip1
+
+CONTINUE. branch1
+@AMY when you choose 2nd option, it will jumpt to this point.
+
+CONTINUE. skip1
+@JACK_RIPPER flashback is ended here.
+
+ANIMEFFECT. flashback_end
+
+WALK_OUT. @AMY from left speed 1 ; @JACK_RIPPER from right speed 3 ;
+// 
+// @JACK_RIPPER anim ANIM_AWKWARD I don't know what to do with her.
+// ANIMEFFECT. flashback_end
+
+// @JACK_RIPPER that's the flashback end. Now let's try moving to another place.
+
+ANIMEFFECT. trans1 #FFF000
+CHARACTERS. @AMY position center anim ANIM_CROSS faceTo right ; @Carl anim ANIM_IDLE position left
+BACKGROUND. home
+BGM. bgm-boyfriend
+
+@Carl Hi I'm {Carl}, a love interest
+
+@NONE which clothes should I wear to school?
+DRESSUP. Casual COST. virtualCurrency1 200 REWARD. virtualCurrency2 50
+DRESSUP. Sexy
+
+@AMY great choice.
+
+// ANIMEFFECT. text_chat CHAPTER1_ID1
+
+@AMY This is the end of chapter 1.
+END. yellow
