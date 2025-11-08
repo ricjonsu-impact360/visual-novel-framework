@@ -1,0 +1,20 @@
+// Test file for INCLUDE functionality
+
+// Include common macro library
+INCLUDE. common_macros.vnscript
+
+// Now we can use macros from the included file
+BACKGROUND. park center
+CHARACTERS. @Amy position center
+
+@Amy Beautiful day, isn't it?
+
+USE_MACRO. dramatic_pause 2
+
+USE_MACRO. zoom_on_char Amy
+
+@Amy Wait... something's not right.
+
+USE_MACRO. fade_to_black
+
+END. black

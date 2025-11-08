@@ -1,0 +1,30 @@
+// Test file for improved branching syntax
+
+BACKGROUND. shop center
+CHARACTERS. @Merchant position center
+
+@Merchant Welcome to my shop! What can I get for you?
+
+// New improved branching syntax
+CHOICE.
+    OPTION. Just browsing, thanks
+        @Merchant No problem, take your time!
+    END_OPTION.
+
+    OPTION[cost=coins:100] Buy the sword
+        @Merchant Excellent choice! Here's your new sword.
+        @Merchant It'll serve you well in battle.
+    END_OPTION.
+
+    OPTION[cost=coins:50, reward=experience:25] Buy the shield
+        @Merchant Smart decision! This shield will protect you.
+    END_OPTION.
+
+    OPTION[requires=member_card] VIP discount
+        @Merchant Ah, a VIP member! Let me give you our special rates.
+    END_OPTION.
+END_CHOICE.
+
+@Merchant Thanks for your business!
+
+END. black

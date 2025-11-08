@@ -1,0 +1,58 @@
+// Test file for macro system
+// This demonstrates various macro features
+
+// Define a simple macro with no parameters
+MACRO. office_transition
+    ANIMEFFECT. trans0 animStart instant
+    BACKGROUND. office center
+END_MACRO.
+
+// Define a macro with parameters
+MACRO. char_enter name position
+    WALK_IN. @{name} from left to {position}
+    SETCHAR. @{name} anim ANIM_IDLE emo EMO_NEUTRAL
+END_MACRO.
+
+// Define a complex macro with multiple parameters
+MACRO. office_scene char_name
+    ANIMEFFECT. trans0 animStart instant
+    CHARACTERS. @{char_name} anim ANIM_SIT_TYPING_GENTLE emo EMO_NEUTRAL position right faceTo left
+    OBJECT. desk desk_front from { x:550, y:1700 } pivotX 0.5 pivotY 1 zIndex 1 persist true
+    OBJECT. chair office_chair_front from { x:800, y:1680 } pivotX 0.5 pivotY 1 zIndex -1 persist true
+    ANIMEFFECT. zoom_pan scale 1.5 posX 500 posY 900 moveX 120 moveY 0 time 0
+END_MACRO.
+
+// Now use the macros
+
+// Scene 1: Office transition
+USE_MACRO. office_transition
+
+@none Welcome to the office!
+
+// Scene 2: Character enters
+USE_MACRO. char_enter Barney center
+
+@Barney Hello! Welcome to my workspace.
+
+// Scene 3: Complex office scene
+USE_MACRO. office_scene Barney
+
+@Barney I'm working on something important.
+
+// Scene 4: Another character enters
+USE_MACRO. char_enter Amy right
+
+@Amy Hi Barney, how's it going?
+@Barney Pretty good! Just working on this project.
+
+CHOICE.
+@Amy Want to grab lunch?
+{
+    @Barney Sure, let's go!
+}
+@Amy Never mind, I'll ask later.
+{
+    @Barney No problem, maybe later.
+}
+
+END. black

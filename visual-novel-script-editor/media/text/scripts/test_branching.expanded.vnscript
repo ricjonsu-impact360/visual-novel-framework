@@ -1,0 +1,33 @@
+// Test file for improved branching syntax
+
+BACKGROUND. shop center
+CHARACTERS. @Merchant position center
+
+@Merchant Welcome to my shop! What can I get for you?
+
+// New improved branching syntax
+CHOICE.
+@none Just browsing, thanks
+{
+        @Merchant No problem, take your time!
+}
+
+@none Buy the sword
+{ COST. coins 100
+        @Merchant Excellent choice! Here's your new sword.
+        @Merchant It'll serve you well in battle.
+}
+
+@none Buy the shield
+{ COST. coins 50 REWARD. experience 25
+        @Merchant Smart decision! This shield will protect you.
+}
+
+@none VIP discount
+{ // requires: member_card
+        @Merchant Ah, a VIP member! Let me give you our special rates.
+}
+
+@Merchant Thanks for your business!
+
+END. black

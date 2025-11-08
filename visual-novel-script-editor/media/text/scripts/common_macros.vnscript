@@ -1,0 +1,22 @@
+// Common macro library
+// This file contains reusable macros that can be included in other scripts
+
+MACRO. fade_to_black
+    ANIMEFFECT. trans0 #000000
+END_MACRO.
+
+MACRO. fade_from_black
+    ANIMEFFECT. trans1 #000000
+END_MACRO.
+
+MACRO. char_exit name
+    WALK_OUT. @{name} from center
+END_MACRO.
+
+MACRO. dramatic_pause delay
+    @none textDelay {delay}
+END_MACRO.
+
+MACRO. zoom_on_char char
+    ANIMEFFECT. zoom_in @{char}
+END_MACRO.
