@@ -148,6 +148,24 @@
             gap: 10px;
         }
 
+        .btn {
+            background: linear-gradient(135deg, #ff6b35, #ff8c42);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 95px;
+            height: 40px;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
         .play-btn {
             background: linear-gradient(135deg, #ff6b35, #ff8c42);
             color: white;
@@ -497,6 +515,18 @@
     </style>
 </head>
 <body>
+     <button class="btn" onclick="
+        if (window.history.length > 1&&document.referrer.split('/').pop()=='character-preview.html') {
+            window.history.back();
+        }
+        else{
+            window.location.href='character-preview.html'
+        }    
+    " 
+    style="
+        width: auto;
+        margin: 5px;
+    ">Go to Character Preview</button>
     <div class="container">
         <div class="header">
             <h1>🎵 Audio Previewer</h1>
@@ -609,13 +639,30 @@
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
             loadSoundFiles();
+
+            // Restore last opened tab from localStorage
+            const lastTab = localStorage.getItem('audioPreviewerLastTab');
+            if (lastTab && (lastTab === 'bgm' || lastTab === 'sfx')) {
+                // Only switch if it's not already the active tab
+                if (lastTab !== 'bgm') {
+                    switchTab(lastTab);
+                }
+            }
         });
 
         // Switch between tabs
         function switchTab(tabName) {
+            // Save current tab to localStorage
+            localStorage.setItem('audioPreviewerLastTab', tabName);
+
             // Update tab buttons
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+                // Add active class to the matching tab
+                if (tab.onclick && tab.onclick.toString().includes(`switchTab('${tabName}')`)) {
+                    tab.classList.add('active');
+                }
+            });
 
             // Update tab content
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));

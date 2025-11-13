@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>(CP) First World Problems</title>
+    <title>Visual Novel</title>
     <link rel="icon" type="image/png" href="media/graphics/misc/favicon.ico" />
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0, shrink-to-fit=no, minimal-ui"/>
@@ -22,33 +22,130 @@
 
 <!-- APICode -->
 </head>
-<body onload="setTimeout(function(){window.scrollTo(0,1)},1);">   
-        <div id="divDeveloperRight" style="
+<body onload="setTimeout(function(){window.scrollTo(0,1)},1);" style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; overflow: hidden;">
+        <!-- Right Panel - Speaker Box Settings -->
+        <div id="divDeveloperRightPanel" style="
             z-index: 3;
-            position: absolute;
-            float: right;
-            background-color: rgba(0,0,0,0.5);
-            right: 1%;
-            top:5%;
-            color:white;
-            padding:1em;
+            position: fixed;
+            background: linear-gradient(135deg, rgba(30,30,40,0.95) 0%, rgba(20,20,30,0.95) 100%);
+            backdrop-filter: blur(10px);
+            right: 10px;
+            top: 10px;
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 280px;
+            transition: all 0.3s ease;
         "></div>
-        <div id="divDeveloper" style="background-color:rgba(0,0,0,0.5); color:white; position:absolute; float:left;z-index: 3; padding:1em; overflow-y: auto; height:95%">                 
-            <!-- <button onclick="javascript:exportFiles.updateCharacterData();" style="padding: 1em;">Save Data</button>             -->
+
+        <!-- Left Panel - Main Controls -->
+        <div id="divDeveloper" style="
+            background: linear-gradient(135deg, rgba(30,30,40,0.95) 0%, rgba(20,20,30,0.95) 100%);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            position: fixed;
+            left: 10px;
+            top: 10px;
+            bottom: 10px;
+            z-index: 3;
+            padding: 15px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            width: 320px;
+            max-width: calc(100vw - 320px);
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) rgba(0,0,0,0.2);
+        ">
+            <h2 style="margin: 0 0 15px 0; padding-bottom: 12px; border-bottom: 2px solid rgba(100,100,255,0.5); font-size: 1.3em; font-weight: 600; letter-spacing: 0.5px;">Character Preview</h2>
             <div id ="divCharacter"></div>
             <div id ="divDressUp"></div>
         </div>
-        
-    <!--body-->
-        <div id="ajaxbar">
+
+        <!-- Canvas Container -->
+        <div id="ajaxbar" style="position: fixed; inset: 0; z-index: 1;">
             <div id="game"><canvas id="canvas"></canvas></div>
-    
+
             <div id="orientate"><img src="https://s3.ap-southeast-1.amazonaws.com/marketjs-visual-novel/1.0.0/media/graphics/orientate/landscape.jpg" /></div>
             <div id="play" class="play" onclick=""></div>
-            <!-- <div id="save-image"><a><img src="media/graphics/misc/invisible.png" style="width: 100%; height: 100%;"></a></div> -->
-            <!--<img id="scrollDown" width="220" height="277"></img>-->
-    
         </div>
+
+        <style>
+            /* Smooth scrollbar styling for webkit browsers */
+            #divDeveloper::-webkit-scrollbar {
+                width: 8px;
+            }
+            #divDeveloper::-webkit-scrollbar-track {
+                background: rgba(0,0,0,0.2);
+                border-radius: 4px;
+            }
+            #divDeveloper::-webkit-scrollbar-thumb {
+                background: rgba(255,255,255,0.3);
+                border-radius: 4px;
+            }
+            #divDeveloper::-webkit-scrollbar-thumb:hover {
+                background: rgba(255,255,255,0.5);
+            }
+
+            /* Apply same scrollbar styling to dropdown suggestions */
+            .dropdown-suggestions::-webkit-scrollbar {
+                width: 8px;
+            }
+            .dropdown-suggestions::-webkit-scrollbar-track {
+                background: rgba(0,0,0,0.2);
+                border-radius: 4px;
+            }
+            .dropdown-suggestions::-webkit-scrollbar-thumb {
+                background: rgba(255,255,255,0.3);
+                border-radius: 4px;
+            }
+            .dropdown-suggestions::-webkit-scrollbar-thumb:hover {
+                background: rgba(255,255,255,0.5);
+            }
+
+            /* Better input styling */
+            input[type="search"],
+            input[type="color"],
+            select,
+            button {
+                transition: all 0.2s ease;
+            }
+
+            button:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+
+            button:active {
+                transform: translateY(0);
+            }
+
+            /* Animations */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes pulse {
+                0%, 100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.7;
+                }
+            }
+        </style>
         <!-- <div id="tempdiv"><br><br><br></div> -->
     <!-- APICode2 -->
     

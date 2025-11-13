@@ -1,9 +1,21 @@
-//character-preview version 1.0.12
+//character-preview version 1.1.0
 var myTimeout = setInterval(changePreview, 500);
 
-function changePreview() {
+
+function changePreview () {
 	try {
 		if (ig && ig.game) {
+			
+			ig.SizeHandler.inject({
+			resize:function(){
+					this.parent();
+					if(ig.game&&ig.game.boyPreview!=null){
+						ig.game.boyPreview.spriter.pos.x = ig.game.midX + 350;
+						ig.game.girlPreview.spriter.pos.x = ig.game.midX + 350;
+					}
+				}
+			});
+
 			clearInterval(myTimeout);
 			characterPreview.initMenu();
 		}
@@ -13,11 +25,16 @@ function changePreview() {
 }
 
 var characterPreview = {
+	// Panel Opacity Configuration (0.0 to 1.0)
+	panelOpacity: 0.8,
+
 	currentCharName: "Amy",
 	currentGender: "girl",
 	currentBG: "office.png",
 	currentAnimation: "ANIM_IDLE",
 	currentEmotion: "EMO_NEUTRAL",
+	currentShadow:true,
+	currentTint:null,
 	charData: {},
 	duPart: [],
 	animationList: [],
@@ -27,13 +44,31 @@ var characterPreview = {
 	charPosX: 0,
 	optionList: {},
 	dropdownList: {},
-	initMenu: function() {
 
-		this.setDefaultSpriterData(function() {
+
+	setPanelOpacity: function () {
+		var leftPanel = document.getElementById('divDeveloper');
+		var rightPanel = document.getElementById('divDeveloperRightPanel');
+
+		if (leftPanel) {
+			leftPanel.style.background = 'linear-gradient(135deg, rgba(30,30,40,' + this.panelOpacity + ') 0%, rgba(20,20,30,' + this.panelOpacity + ') 100%)';
+		}
+
+		if (rightPanel) {
+			rightPanel.style.background = 'linear-gradient(135deg, rgba(30,30,40,' + this.panelOpacity + ') 0%, rgba(20,20,30,' + this.panelOpacity + ') 100%)';
+		}
+	},
+
+	initMenu: function () {
+
+		this.setDefaultSpriterData(function () {
 			ig.game.director.jumpTo(LevelPreview);
 			//preset to avoid errors from engine
 			ig.game.sessionData.dressUpTheme = [{ now: "amy" }, { now: "amy" }];
 			ig.game.currentWindow.numChapter = 1;
+
+			ig.game.boyPreview.spriter.pos.x = ig.game.midX + 350;
+			ig.game.girlPreview.spriter.pos.x = ig.game.midX + 350;
 
 			ig.game.boyPreview.spriter.pos.y = ig.game.midY + this.charPosY;
 			ig.game.girlPreview.spriter.pos.y = ig.game.midY + this.charPosY;
@@ -43,7 +78,7 @@ var characterPreview = {
 			ig.soundHandler.bgmPlayer.volume(0);
 			exportFiles.phpFile = "script-converter/script-editor.php";
 
-			this.getFilesFromFolder("../../v2-visual-novel-assets/graphics/backgrounds", function(data) {
+			this.getFilesFromFolder("../../v2-visual-novel-assets/graphics/backgrounds", function (data) {
 
 				for (var i = 0; i < data.length; i++) {
 					// _DATAGAME.BGFileType[data[i]] = 'png';
@@ -59,17 +94,30 @@ var characterPreview = {
 
 				var options = Object.keys(this.charData);
 				options.sort();
-				this.createDiv(null, "ToggleDeveloperRight", "divDeveloperRight", "z-index: 5;position: absolute;float: right;background-color: rgba(0, 0, 0, 0.5);right: 1%;color: white;padding: 1em;display: block;")
 
+				// Create content container inside divDeveloperRightPanel
+				var rightPanel = document.getElementById("divDeveloperRightPanel");
+				var contentDiv = document.createElement("div");
+				contentDiv.id = "divDeveloperRight";
+				rightPanel.appendChild(contentDiv);
+
+				// Create toggle button for the right panel content
+				this.createShowHide("divDeveloperRight", "divDeveloperRightPanel", false);
 				this.createLabel("divDeveloperRight", "speakerName", "Speaker box colors");
-				this.createShowHide("divDeveloperRight", "divToggleDeveloperRight", true);
-				this.createColorPick(null, "bgName", "bgName :", this.changeColors.bind(this));
-				this.createColorPick(null, "textName", "textName :", this.changeColors.bind(this));
-				this.createColorPick(null, "outlineName", "outlineName :", this.changeColors.bind(this));
-				this.createButton("colorpickoutlineName", "btnNoneOutline", "Set None", this.setNoneOutline.bind(this), false);
+				this.createColorPick("divDeveloperRight", "bgName", "bgName :", this.changeColors.bind(this));
+				this.createColorPick("divDeveloperRight", "textName", "textName :", this.changeColors.bind(this));
+				this.createColorPick("divDeveloperRight", "outlineName", "outlineName :", this.changeColors.bind(this),true,true);
+				// this.createButton("colorpickoutlineName", "btnNoneOutline", "Set None", this.setNoneOutline.bind(this), false);
 				this.createButton("divDeveloperRight", "btnDeleteAll", "Delete All", this.deleteAllNameProperties.bind(this));
 				this.createLabel("divDeveloperRight", "deleteDesc", "*Delete name properties for all characters", "small");
 
+				this.createDiv(null,"AudioPreview","divDeveloper",`
+					z-index: 3;
+					position: fixed;
+					right: 10px;
+					bottom: 10px;
+				`);
+				this.createButton("divAudioPreview","btnAudioPreview","Go to Audio Preview",this.toAudioPreview.bind(this),false);
 
 				this.createDropdownFilter("divCharacter", "character", "Character Name :", options, this.changeCharacter.bind(this), this.currentCharName);
 				this.createDropdown("divCharacter", "characterType", "Character Type :", ["dynamic_character", "neutral_boy", "neutral_girl", "outfit"], this.changeType.bind(this), "dynamic_character");
@@ -79,21 +127,24 @@ var characterPreview = {
 				this.createShowHide("divDressUp");
 				this.createDropdown("divDressUp", "gender", "Gender :", ["girl", "boy"], this.changeGender.bind(this), this.currentGender);
 				this.createButton("divDressUp", "btnRandom", "Random Character", this.randomCharacter.bind(this));
-				this.createButton("btnbtnRandom", "btnSetNone", "Set None", this.setNoneDressUp.bind(this), false);
+				this.createButton("btnbtnRandom", "btnSetNone", "Set None Dress Up", this.setNoneDressUp.bind(this), false);
 
 				this.loadPartAssets();
 				this.loadAnimation();
 				this.changeCharacter("character", this.currentCharName);
-			}.bind(this))
+			}.bind(this));
 		}.bind(this));
 
-
+		this.setPanelOpacity();
 
 	},
-	setNoneOutline: function() {
+	toAudioPreview:function(){
+		window.location.href = 'audio-previewer.html';
+	},
+	setNoneoutlineName: function () {
 		this.changeColors("outlineName", "none");
 	},
-	exportCharacterData: function() {
+	exportCharacterData: function () {
 		var characterData = this.charData[this.currentCharName];
 		var exportData = {
 			bgName: characterData.bgName,
@@ -108,11 +159,11 @@ var characterPreview = {
 		Swal.fire({
 			icon: 'success',
 			title: 'Data Exported!',
-			text: 'Character data has been logged to the console.',
+			text: 'Character data has been logged to the console.'
 		});
 	},
 
-	showImportModal: function() {
+	showImportModal: function () {
 		Swal.fire({
 			title: 'Import Character Data',
 			html: '<textarea id="swal-import-data" class="swal2-textarea" placeholder="Paste your JSON/Object data here..." style="height: 200px;"></textarea>',
@@ -127,7 +178,7 @@ var characterPreview = {
 		});
 	},
 
-	importCharacterData: function(jsonString) {
+	importCharacterData: function (jsonString) {
 		if (!jsonString) {
 			console.log("No data pasted");
 			return;
@@ -186,11 +237,11 @@ var characterPreview = {
 			Swal.fire({
 				icon: 'error',
 				title: 'Oops...',
-				text: 'Invalid JSON data!',
+				text: 'Invalid JSON data!'
 			});
 		}
 	},
-	showLoading: function(text = 'Loading...') {
+	showLoading: function (text = 'Loading...') {
 		var loadingOverlay = document.getElementById('loadingOverlay');
 		if (loadingOverlay) return; // Prevent multiple overlays
 
@@ -212,13 +263,13 @@ var characterPreview = {
 		document.body.appendChild(loadingOverlay);
 	},
 
-	hideLoading: function() {
+	hideLoading: function () {
 		var loadingOverlay = document.getElementById('loadingOverlay');
 		if (loadingOverlay) {
 			loadingOverlay.parentNode.removeChild(loadingOverlay);
 		}
 	},
-	deleteAllNameProperties: function() {
+	deleteAllNameProperties: function () {
 		for (charName in this.charData) {
 			delete this.charData[charName]["bgName"];
 			delete this.charData[charName]["textName"];
@@ -230,7 +281,7 @@ var characterPreview = {
 		this.saveCharacter();
 	},
 
-	createShowHide: function(divName, parent, isAppend = false) {
+	createShowHide: function (divName, parent, isAppend = false) {
 		var myParent = document.getElementById("divDeveloper");
 		if (parent) myParent = document.getElementById(parent);
 
@@ -239,16 +290,32 @@ var characterPreview = {
 		var name = divName.substr(3);
 		div.id = "divToggle" + name;
 		divShow.style.display = "block";
-		div.innerHTML = "[Hide " + name + "]";
-		div.style.textDecoration = "underline";
-		div.style.cursor = "pointer";
-		div.onclick = function() {
+		div.innerHTML = "▼ Hide " + name;
+		div.style.cssText = `
+			cursor: pointer;
+			padding: 10px 15px;
+			margin: 10px 0;
+			background: rgba(255,255,255,0.05);
+			border-radius: 6px;
+			border: 1px solid rgba(255,255,255,0.1);
+			font-weight: 500;
+			font-size: 13px;
+			letter-spacing: 0.5px;
+			transition: all 0.2s ease;
+		`;
+		div.onmouseenter = function () {
+			this.style.background = "rgba(255,255,255,0.1)";
+		};
+		div.onmouseleave = function () {
+			this.style.background = "rgba(255,255,255,0.05)";
+		};
+		div.onclick = function () {
 			if (divShow.style.display === "none" || divShow.style.display == "") {
 				divShow.style.display = "block";
-				div.innerHTML = "[Hide " + name + "]";
+				div.innerHTML = "▼ Hide " + name;
 			} else if (divShow.style.display === "block") {
 				divShow.style.display = "none";
-				div.innerHTML = "[Show " + name + "]";
+				div.innerHTML = "▶ Show " + name;
 			}
 		}.bind(this);
 		if (isAppend == true) {
@@ -256,18 +323,18 @@ var characterPreview = {
 		} else
 			myParent.insertBefore(div, divShow);
 	},
-	changeType: function(varName, value) {
+	changeType: function (varName, value) {
 		this.charData[this.currentCharName].type = value;
 		this.checkType();
 		this.showDressUP();
 	},
-	hideDressUP: function() {
+	hideDressUP: function () {
 		document.getElementById("divDressUp").style.display = "none";
 	},
-	showDressUP: function() {
+	showDressUP: function () {
 		document.getElementById("divDressUp").style.display = "block";
 	},
-	setDefaultSpriterData: function(functComplete) {
+	setDefaultSpriterData: function (functComplete) {
 		if (!_DATAGAME.spriterData.hasOwnProperty("amy") || !_DATAGAME.spriterData.hasOwnProperty("jack")) {
 			_DATAGAME.spriterData["amy"] = {
 				girl: convertFiles.copy(convertFiles.defaultOutfit.girl)
@@ -277,13 +344,13 @@ var characterPreview = {
 				boy: convertFiles.copy(convertFiles.defaultOutfit.boy)
 			};
 		}
-		exportFiles.readFile("media/text/customload.js", "_CUSTOMLOAD", function(obj, data) {
+		exportFiles.readFile("media/text/customload.js", "_CUSTOMLOAD", function (obj, data) {
 			convertFiles.engineVersion = "2.0.0";
 			convertFiles.arrCustomLoad = obj.Chapter;
 			var charDataLoad = convertFiles.createCharactersData({});
 			var keysLoad = Object.keys(charDataLoad);
 
-			exportFiles.readFile("script-converter/characters-data.js", "charData", function(obj, data) {
+			exportFiles.readFile("script-converter/characters-data.js", "charData", function (obj, data) {
 				var keys = Object.keys(obj);
 				//charData empty, set default from customload
 				if (keys.length == 0) {
@@ -308,7 +375,7 @@ var characterPreview = {
 		//         console.log(this.charData);
 	},
 
-	loadAnimation: function() {
+	loadAnimation: function () {
 		if (this.currentGender == "girl") {
 			this.animationList = Object.keys(ig.game.girlPreview.spriter.spriter.entities.items[0].animations.itemNames);
 		} else
@@ -326,6 +393,9 @@ var characterPreview = {
 		this.createDropdownFilter("divCharacter", "animation", "Animation :", this.animationList, this.changeAnimation.bind(this), "ANIM_IDLE");
 		this.createDropdownFilter("divCharacter", "emo", "Emo :", this.emoList, this.changeEmotion.bind(this), "EMO_NEUTRAL");
 		this.createDropdownFilter("divCharacter", "handheld", "Handheld :", this.handheldList, this.changeHandheld.bind(this), "none");
+		this.createCheckbox("divCharacter","shadow","Shadow",this.changeShadow.bind(this),this.currentShadow);		
+		this.createColorPick("divCharacter", "tint", "Tint :", this.changeTint.bind(this),true,true);
+		// this.createButton("colorpicktint", "btnTintNone", "Set Tint None", this.changeTintNull.bind(this));
 		// this.createAnimationNote();
 
 		// Created here so that the buttons will be created at the bottom just before the dress up section
@@ -333,7 +403,7 @@ var characterPreview = {
 		this.createButton("btnbtnImportData", "btnExportData", "Export Data", this.exportCharacterData.bind(this), false);
 	},
 
-	checkEmotionandMouthFrown: function(char) {
+	checkEmotionandMouthFrown: function (char) {
 		//CHECK EMOTION
 		ig.game[char].isHaveEmotion = true;
 		if (_DATAGAME.noEmotion.indexOf(this.currentAnimation) >= 0) {
@@ -377,7 +447,7 @@ var characterPreview = {
 	//         }
 	//     },
 
-	changeEmotion: function(varname, value) {
+	changeEmotion: function (varname, value) {
 
 		this.currentEmotion = value;
 		// this.changeAllDU();
@@ -409,9 +479,9 @@ var characterPreview = {
 
 	},
 
-	loadPartAssets: function() {
-		this.getFilesFromFolder("../../v2-visual-novel-assets/graphics/characters/" + this.currentGender, function(data) {
-			this.duPart.forEach(function(key) {
+	loadPartAssets: function () {
+		this.getFilesFromFolder("../../v2-visual-novel-assets/graphics/characters/" + this.currentGender, function (data) {
+			this.duPart.forEach(function (key) {
 				this.removeDropdown(key);
 			}.bind(this));
 			var objPartList = {};
@@ -433,7 +503,7 @@ var characterPreview = {
 					}
 				}
 			}
-			this.duPart.forEach(function(key) {
+			this.duPart.forEach(function (key) {
 				this.createDropdownFilter("divDressUp", key, key + " :", objPartList[key], this.changeDU.bind(this));
 			}.bind(this));
 
@@ -446,8 +516,8 @@ var characterPreview = {
 		}.bind(this));
 	},
 
-	randomCharacter: function() {
-		this.duPart.forEach(function(key) {
+	randomCharacter: function () {
+		this.duPart.forEach(function (key) {
 			var dropdown = document.getElementById(key);
 			var isFilter = false;
 			if (dropdown.options == null) {
@@ -463,8 +533,10 @@ var characterPreview = {
 			this.changeDU(key, dropdown.options[randIdx].value);
 		}.bind(this));
 	},
-	setNoneDressUp: function() {
-		this.duPart.forEach(function(key) {
+	setNoneDressUp: function () {
+		this.currentTint=null;						
+
+		this.duPart.forEach(function (key) {
 			var dropdown = document.getElementById(key);
 			var total = dropdown.options.length;
 			var randIdx = Math.floor(Math.random() * total);
@@ -485,22 +557,43 @@ var characterPreview = {
 			}
 		}.bind(this));
 	},
-
-	changeHandheld: function(varName, value) {
+	setNonetint:function(varName,value){
+		this.currentTint=null;
+		this.changeAnimation("null",this.currentAnimation);
+	},
+	changeTint:function(varName,value){
+		this.currentTint=value;
+		// if (this.currentGender == "girl") {
+		// 	ig.game.girlPreview.changePose(this.currentAnimation,this.currentHandheld,this.currentShadow,100,this.currentTint);
+		// }else{
+		// 	ig.game.boyPreview.checkShadow(this.currentAnimation,this.currentHandheld,this.currentShadow,100,this.currentTint);
+		// }
+		this.changeAnimation("null",this.currentAnimation);
+	},
+	changeShadow:function(varName,value){
+		console.log("changesh",value);
+		this.currentShadow=value;
+		if (this.currentGender == "girl") {
+			ig.game.girlPreview.checkShadow(value);
+		}else{
+			ig.game.boyPreview.checkShadow(value);
+		}
+	},
+	changeHandheld: function (varName, value) {
 		this.currentHandheld = value;
 		if (value == "none") this.currentHandheld = "";
 
 		this.changeAnimation("anim", this.currentAnimation);
 	},
-	changeAnimation: function(varName, value) {
+	changeAnimation: function (varName, value) {
 		//loading all animations
 		// Object.keys(ig.game.girlPreview.spriter.spriter.entities.items[0].animations.itemNames);
 		this.currentAnimation = value;
 
 		if (this.currentGender == "girl") {
-			ig.game.girlPreview.changePose(value, this.currentHandheld);
+			ig.game.girlPreview.changePose(value, this.currentHandheld,this.currentShadow,100,this.currentTint);
 		} else {
-			ig.game.boyPreview.changePose(value, this.currentHandheld);
+			ig.game.boyPreview.changePose(value, this.currentHandheld,this.currentShadow,100,this.currentTint);
 		}
 		//         this.changeAllDU();
 		this.changeEmotion("null", this.currentEmotion);
@@ -510,7 +603,7 @@ var characterPreview = {
 			this.createAnimationNote("");
 		}
 	},
-	checkType: function() {
+	checkType: function () {
 		if (this.charData[this.currentCharName].type == "neutral_boy") {
 			this.changeGender("gender", "boy");
 			this.setValueDropdown("gender", "boy");
@@ -529,7 +622,7 @@ var characterPreview = {
 			} else opt.disabled = false;
 		});
 	},
-	changeCharacter: function(varName, value) {
+	changeCharacter: function (varName, value) {
 		this.resetButtonNote();
 
 		this.currentCharName = value;
@@ -544,7 +637,12 @@ var characterPreview = {
 		this.changeAnimation("animation", "ANIM_IDLE");
 	},
 
-	changeDU: function(varName, value) {
+	changeDU: function (varName, value) {
+		if(this.currentTint!=null){
+			this.currentTint=null;
+			this.changeAnimation("null",this.currentAnimation);
+		}
+
 		_DATAGAME.spriterData[this.currentCharName] = this.charData[this.currentCharName];
 		// _DATAGAME.spriterData["jack"]=this.charData[this.currentCharName];
 		// _DATAGAME.spriterData["amy"]=this.charData[this.currentCharName];
@@ -570,7 +668,7 @@ var characterPreview = {
 
 		this.changeEmotion("null", this.currentEmotion);
 	},
-	changeAllDU: function() {
+	changeAllDU: function () {
 		// this.changeGender("gender",this.currentGender);
 
 		for (var i = 0; i < this.duPart.length; i++) {
@@ -578,7 +676,7 @@ var characterPreview = {
 		}
 
 	},
-	changeGender: function(varName, value) {
+	changeGender: function (varName, value) {
 		this.resetButtonNote();
 		this.currentGender = value;
 		if (this.currentGender == "boy") {
@@ -598,11 +696,11 @@ var characterPreview = {
 		this.loadAnimation();
 		ig.game.sortEntitiesDeferred();
 	},
-	changeColors: function(varName, value) {
+	changeColors: function (varName, value) {
 		this.charData[this.currentCharName][varName] = value;
 		_DATAGAME.spriterData[this.currentCharName] = this.charData[this.currentCharName];
 	},
-	changeBackground: function(varName, value) {
+	changeBackground: function (varName, value) {
 		var par = ig.game.bgPreview._parent;
 		var zIndex = ig.game.bgPreview.zIndex;
 		this.currentBG = value;
@@ -627,16 +725,16 @@ var characterPreview = {
 		ig.sizeHandler.resize();
 		// ig.game.bgPreview.placeName=value.split(".png")[0];
 		// ig.game.bgPreview.image = new ig.Image(_BASEPATH.background +value, ig.game.bgPreview.size.x, ig.game.bgPreview.size.y);
-		ig.game.bgPreviewBack.image.loadCallback = function() {
+		ig.game.bgPreviewBack.image.loadCallback = function () {
 			ig.game.bgPreviewBack.repos();
 		};
-		ig.game.bgPreview.image.loadCallback = function() {
+		ig.game.bgPreview.image.loadCallback = function () {
 			ig.game.bgPreview.repos();
 		};
 		ig.game.sortEntitiesDeferred();
 	},
 
-	getFilesFromFolder: function(path, functComplete) {
+	getFilesFromFolder: function (path, functComplete) {
 		$.ajax({
 			type: "POST",
 			dataType: 'json',
@@ -645,11 +743,11 @@ var characterPreview = {
 				functionname: 'fetchFolderFiles',
 				folderPath: path
 			},
-			success: function(data) {
+			success: function (data) {
 
 				if (functComplete) functComplete(data);
 			},
-			error: function(e) {
+			error: function (e) {
 				console.log(e);
 			}
 
@@ -657,17 +755,17 @@ var characterPreview = {
 	},
 
 	// <input type="file" id="fileInput" webkitdirectory directory multiple>
-	resetButtonNote: function() {
+	resetButtonNote: function () {
 		this.createButtonNote("");
 	},
-	removeCharacter: function() {
+	removeCharacter: function () {
 		delete this.charData[this.currentCharName][this.currentGender];
 		// for(obj in _DATAGAME.spriterData[this.currentCharName][this.currentGender]){
 		//  this.charData[this.currentCharName][this.currentGender][obj]=_DATAGAME.spriterData[this.currentCharName][this.currentGender][obj];          
 		// }
 
 		var dataStr = "var charData=".concat(JSON.stringify(this.charData, null, 1), ";");
-		exportFiles.exportFile('characters-data.js', dataStr, function() {
+		exportFiles.exportFile('characters-data.js', dataStr, function () {
 			// var timerDelay = setTimeout(function(){
 			//  clearTimeout(timerDelay);
 
@@ -684,7 +782,7 @@ var characterPreview = {
 		x: 0,
 		y: 0
 	},
-	clearBG: function() {
+	clearBG: function () {
 		var currentCanvas = document.getElementById("canvas");
 		if (this.isClearBG == false) {
 			this.isClearBG = true;
@@ -733,7 +831,7 @@ var characterPreview = {
 			ig.game.girlPreview.spriter.pos.y = ig.game.midY + this.charPosY;
 		}
 	},
-	exportPNG: function() {
+	exportPNG: function () {
 		// Ask user if they want transparent background and flip options
 		Swal.fire({
 			title: 'Export PNG',
@@ -775,7 +873,7 @@ var characterPreview = {
 			}
 		});
 	},
-	exportPNGWithTransparency: function(transparent, flipHorizontal, flipVertical) {
+	exportPNGWithTransparency: function (transparent, flipHorizontal, flipVertical) {
 		if (transparent) {
 			this.showLoading('Exporting transparent PNG...');
 			// Store original state
@@ -852,7 +950,7 @@ var characterPreview = {
 				ig.game.draw();
 
 				// Export the image and hide loading screen on completion
-				_self.downloadCanvas(tempCanvas, function() {
+				_self.downloadCanvas(tempCanvas, function () {
 					_self.hideLoading();
 				}, flipHorizontal, flipVertical);
 			}, 1000);
@@ -868,7 +966,7 @@ var characterPreview = {
 		}
 	},
 
-	flipCanvas: function(canvas, flipHorizontal, flipVertical) {
+	flipCanvas: function (canvas, flipHorizontal, flipVertical) {
 		if (!flipHorizontal && !flipVertical) {
 			return canvas;
 		}
@@ -906,7 +1004,7 @@ var characterPreview = {
 	 * @param {number} height - Canvas height
 	 * @returns {Object} Bounding box with {top, left, bottom, right, width, height}
 	 */
-	findContentBounds: function(ctx, width, height) {
+	findContentBounds: function (ctx, width, height) {
 		var imageData = ctx.getImageData(0, 0, width, height);
 		var data = imageData.data;
 
@@ -955,7 +1053,7 @@ var characterPreview = {
 		};
 	},
 
-	cropCanvasToContent: function(canvas) {
+	cropCanvasToContent: function (canvas) {
 		var ctx = canvas.getContext("2d");
 		var bounds = this.findContentBounds(ctx, canvas.width, canvas.height);
 
@@ -981,7 +1079,7 @@ var characterPreview = {
 		return croppedCanvas;
 	},
 
-	downloadCanvas: function(canvas, callback, flipHorizontal, flipVertical) {
+	downloadCanvas: function (canvas, callback, flipHorizontal, flipVertical) {
 		// Apply flip transformations if needed
 		var processedCanvas = canvas;
 		if (flipHorizontal || flipVertical) {
@@ -1011,7 +1109,7 @@ var characterPreview = {
 		// if(this.currentGender=="girl")ctx.drawImage(ig.game.girlPreview, 0, 0, w, h);
 		// else ctx.drawImage(ig.game.boyPreview, 0, 0, w, h);
 	},
-	saveCharacter: function() {
+	saveCharacter: function () {
 		//updating charData with current DU data
 
 		//set charData and spriterData to dropdown value
@@ -1019,7 +1117,7 @@ var characterPreview = {
 			_DATAGAME.spriterData[this.currentCharName][this.currentGender] = {};
 			this.charData[this.currentCharName][this.currentGender] = {};
 		}
-		this.duPart.forEach(function(key) {
+		this.duPart.forEach(function (key) {
 			var value = this.getValueDropdown(key);
 			_DATAGAME.spriterData[this.currentCharName][this.currentGender][key] = value;
 			this.charData[this.currentCharName][this.currentGender][key] = value;
@@ -1033,7 +1131,7 @@ var characterPreview = {
 		this.checkDynamicCharacter();
 		// ig.game.girlPreview.changeDU("amy"); 
 	},
-	checkDynamicCharacter: function() {
+	checkDynamicCharacter: function () {
 		var charName = convertFiles.capitalizeFirstLetter(this.currentCharName.replace("_", " "));
 		if (this.charData[this.currentCharName].type == "dynamic_character") {
 			if (!_LANG["en"]["dynamic_character"][charName]) {
@@ -1048,34 +1146,74 @@ var characterPreview = {
 		}
 	},
 
-	createColorPick: function(parent, varName, text, functClick, isNewDiv = true) {
+	createColorPick: function (parent, varName, text, functClick, isNewDiv = true,isButtonNone=false) {
 		var myParent;
 		var div;
 		if (isNewDiv == true) {
-			if (document.getElementById(varName) != null) {
-				document.getElementById("btn" + varName).remove();
+			if (document.getElementById(varName) != null&&document.getElementById("colorpick" + varName)) {
+				document.getElementById("colorpick" + varName).remove();
 			}
-			myParent = document.getElementById((parent == null) ? "divDeveloperRight" : parent);
+			myParent = document.getElementById((parent == null) ? "divDeveloperRightPanel" : parent);
 			div = document.createElement("div");
 			myParent.appendChild(div);
 			div.id = "colorpick" + varName;
 		} else {
-			div = document.getElementById((parent == null) ? "divDeveloperRight" : parent);
+			div = document.getElementById((parent == null) ? "divDeveloperRightPanel" : parent);
 		}
+		var label = document.createElement("label");
+		label.innerHTML = text;
+		label.style.cssText = `
+			display: block;
+			margin-bottom: 6px;
+			font-size: 16px;
+			font-weight: 500;
+			color: rgba(255,255,255,0.9);
+			letter-spacing: 0.3px;
+		`;
+		div.appendChild(label);
+
 		var input = document.createElement("input");
-		div.innerHTML = text;
 		input.type = "color";
 		input.id = varName;
-		div.style = "padding:0.5em;";
 		input.value = "#000000";
+		input.style.cssText = `
+			width: 100%;
+			height: 40px;
+			border: 2px solid rgba(255,255,255,0.2);
+			border-radius: 6px;
+			cursor: pointer;
+			transition: all 0.2s ease;
+		`;
+
+		
+		input.onmouseenter = function () {
+			this.style.borderColor = "rgba(100,100,255,0.5)";
+		};
+		input.onmouseleave = function () {
+			this.style.borderColor = "rgba(255,255,255,0.2)";
+		};
 		div.appendChild(input);
-		input.addEventListener("change", (event) => {
+		div.style.cssText = "padding: 10px 0; margin: 8px 0;";
+
+		if(isButtonNone==true){
+			input.style.width=`40%`;
+			this.createButton("colorpick" + varName,"btnNone"+varName,"Set None",this["setNone"+varName].bind(this),false);
+			var btnNone=document.getElementById("btnNone"+varName);
+			btnNone.style.width="40%";
+			btnNone.style.marginLeft="12px";
+			btnNone.style.verticalAlign="top";
+		}
+		input.addEventListener("change", (event) => {			
+			if (functClick != null) functClick(varName, event.target.value);
+		});
+
+		input.addEventListener("input", (event) => {						
 			if (functClick != null) functClick(varName, event.target.value);
 		});
 		var valueDefault = this.charData[this.currentCharName][varName];
 		input.value = valueDefault;
 	},
-	createDiv: function(parent, varName, divBefore, style = null) {
+	createDiv: function (parent, varName, divBefore, style = null) {
 		var myParent;
 		var div;
 
@@ -1089,7 +1227,7 @@ var characterPreview = {
 		div.id = "div" + varName;
 		if (style) div.style = style;
 	},
-	createButton: function(parent, varName, text, functClick, isNewDiv = true) {
+	createButton: function (parent, varName, text, functClick, isNewDiv = true) {
 		var myParent;
 		var div;
 		if (isNewDiv == true) {
@@ -1108,84 +1246,173 @@ var characterPreview = {
 		div.appendChild(button);
 		button.innerHTML = text;
 		button.onclick = functClick;
-		button.style = "padding:1em; margin:1em;";
+		button.style.cssText = `
+			padding: 8px 16px;
+			margin: 4px 2px;
+			background: linear-gradient(135deg, rgba(100,100,255,0.8), rgba(80,80,200,0.8));
+			color: white;
+			border: 1px solid rgba(255,255,255,0.2);
+			border-radius: 6px;
+			cursor: pointer;
+			font-size: 14px;
+			font-weight: 500;
+			letter-spacing: 0.3px;
+			transition: all 0.2s ease;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+			width: calc(100% - 4px);
+			text-align: center;
+		`;
+		button.onmouseenter = function () {
+			this.style.background = "linear-gradient(135deg, rgba(120,120,255,0.9), rgba(100,100,220,0.9))";
+			this.style.boxShadow = "0 4px 12px rgba(100,100,255,0.3)";
+		};
+		button.onmouseleave = function () {
+			this.style.background = "linear-gradient(135deg, rgba(100,100,255,0.8), rgba(80,80,200,0.8))";
+			this.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
+		};
 	},
 
-	getValueDropdown: function(varName) {
+	getValueDropdown: function (varName) {
 		var selectList = document.getElementById(varName);
 		if (selectList != null) {
 			return selectList.value;
 		}
 		return null;
 	},
-	setValueDropdown: function(varName, value) {
+	setValueDropdown: function (varName, value) {
 		var selectList = document.getElementById(varName);
 
 		if (selectList != null) {
-			if (value == 'none' && selectList.type == 'color') value = '#000000'
+			if (value == 'none' && selectList.type == 'color') value = '#000000';
 			selectList.value = value;
 			this.dropdownList[varName] = value;
 		}
 		ig.soundHandler.bgmPlayer.volume(0);
 	},
 
-	removeDropdown: function(varName) {
+	removeDropdown: function (varName) {
 		if (document.getElementById(varName) != null) {
 			document.getElementById("div" + varName).remove();
 		}
 	},
-	createEmoNote: function(text) {
+	createEmoNote: function (text) {
 		var label;
 		if (document.getElementById("labelEmo") == null) {
 			var myParent = document.getElementById("divemo");
 			label = document.createElement("div");
 			label.id = "labelEmo";
-			label.style = "margin:1em";
 			myParent.appendChild(label);
 		} else label = document.getElementById("labelEmo");
 
+		if (text && text.length > 0) {
+			label.style.cssText = `
+				margin: 8px 0;
+				padding: 8px 12px;
+				background: rgba(255,150,50,0.1);
+				border-left: 3px solid rgba(255,150,50,0.5);
+				border-radius: 4px;
+				color: rgba(255,200,100,0.9);
+				font-size: 14px;
+				font-style: italic;
+			`;
+		} else {
+			label.style.cssText = "display: none;";
+		}
+
 		label.innerHTML = text;
 	},
-	createAnimationNote: function(text) {
+	createAnimationNote: function (text) {
 		var label;
 		if (document.getElementById("labelAnimation") == null) {
 			var myParent = document.getElementById("divanimation");
 			label = document.createElement("div");
 			label.id = "labelAnimation";
-			label.style = "margin:1em";
-			myParent.appendChild(label);
+			if(myParent!=null)myParent.appendChild(label);			
 		} else label = document.getElementById("labelAnimation");
+
+		if (text && text.length > 0) {
+			label.style.cssText = `
+				margin: 8px 0;
+				padding: 8px 12px;
+				background: rgba(255,150,50,0.1);
+				border-left: 3px solid rgba(255,150,50,0.5);
+				border-radius: 4px;
+				color: rgba(255,200,100,0.9);
+				font-size: 14px;
+				font-style: italic;
+			`;
+		} else {
+			label.style.cssText = "display: none;";
+		}
 
 		label.innerHTML = text;
 	},
-	createLabel: function(par, varName, text, fontSize) {
+	createLabel: function (par, varName, text, fontSize) {
 		var label;
 		var myParent = document.getElementById(par);
 		if (document.getElementById("label" + varName) == null) {
-
 			label = document.createElement("div");
 			label.id = "label" + varName;
-			// label.style="margin:1em";
 			myParent.appendChild(label);
 		} else label = document.getElementById("label" + varName);
-		if (fontSize) label.style = "fontSize:" + fontSize;
+		label.style.cssText = `
+			margin: 10px 0;
+			padding: 8px 0;
+			font-weight: 500;
+			letter-spacing: 0.3px;
+			color: rgba(255,255,255,0.95);
+			${fontSize ? 'font-size: ' + fontSize + ';' : 'font-size: 14px;'}
+		`;
 		label.innerHTML = text;
 	},
 
-	createButtonNote: function(text) {
+	createButtonNote: function (text) {
 		var label;
 		if (document.getElementById("labelSaveNotification") == null) {
-			var myParent = document.getElementById("divDeveloper");
+			var myParent = document.body;
 			label = document.createElement("div");
 			label.id = "labelSaveNotification";
-			label.style = "margin:1em";
 			myParent.appendChild(label);
-		} else label = document.getElementById("labelSaveNotification");
+		} else {
+			label = document.getElementById("labelSaveNotification");
+		}
 
-		label.innerHTML = text;
+		// Always set the base positioning styles
+		label.style.position = "fixed";
+		label.style.bottom = "20px";
+		label.style.left = "50%";
+		label.style.transform = "translateX(-50%)";
+		label.style.zIndex = "9999";
+		label.style.padding = "12px 24px";
+		label.style.borderRadius = "8px";
+		label.style.fontSize = "14px";
+		label.style.fontWeight = "500";
+		label.style.letterSpacing = "0.3px";
+		label.style.boxShadow = "0 4px 16px rgba(0,0,0,0.4)";
+		label.style.maxWidth = "80%";
+		label.style.textAlign = "center";
+		label.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+
+		if (text && text.length > 0) {
+			label.style.display = "block";
+			label.style.background = "linear-gradient(135deg, rgba(100,200,100,0.95), rgba(80,180,80,0.95))";
+			label.style.backdropFilter = "blur(10px)";
+			label.style.border = "1px solid rgba(100,200,100,0.6)";
+			label.style.color = "white";
+			label.style.opacity = "1";
+			label.innerHTML = text;
+		} else {
+			label.style.opacity = "0";
+			// Delay hiding to allow fade out animation
+			setTimeout(function () {
+				if (label.style.opacity === "0") {
+					label.style.display = "none";
+				}
+			}, 300);
+		}
 	},
 
-	createDropdownFilter: function(par, varName, text, arrOptions, functChange, defaultValue) {
+	createDropdownFilter: function (par, varName, text, arrOptions, functChange, defaultValue) {
 		if (document.getElementById(varName) != null) {
 			document.getElementById("div" + varName).remove();
 		} else {
@@ -1196,136 +1423,695 @@ var characterPreview = {
 		var myParent = document.getElementById(par);
 		var div = document.createElement("div");
 		div.id = "div" + varName;
-		div.style = "margin:1em;";
+		div.style.cssText = `
+			margin: 6px 0;
+			padding: 6px;
+			background: rgba(255,255,255,0.03);
+			border-radius: 6px;
+			border: 1px solid rgba(255,255,255,0.08);
+		`;
 		myParent.appendChild(div);
-		div.innerHTML = text;
 
-		var dataList = document.createElement("datalist");
-		dataList.id = "data" + varName;
-		arrOptions.forEach(value => {
-			const option = document.createElement('option');
-			option.value = value;
-			dataList.appendChild(option);
+		var label = document.createElement("label");
+		label.innerHTML = text;
+		label.style.cssText = `
+			display: block;
+			margin-bottom: 4px;
+			font-size: 16px;
+			font-weight: 500;
+			color: rgba(255,255,255,0.9);
+			letter-spacing: 0.3px;
+		`;
+		div.appendChild(label);
 
-		});
-		div.appendChild(dataList);
+		// Create container for dropdown
+		var dropdownContainer = document.createElement("div");
+		dropdownContainer.style.cssText = "position: relative; margin-bottom: 4px;";
 
-		var selectList = document.createElement("input");
-		selectList.type = "search";
-		selectList.setAttribute('list', "data" + varName);
+		// Hidden select for value storage
+		var selectList = document.createElement("select");
 		selectList.id = varName;
-		selectList.style = "padding:0.5em;";
+		selectList.style.display = "none";
 		div.appendChild(selectList);
 
-		selectList.addEventListener('focus', () => {
-			selectList.select();
+		// Display field showing current selection (clickable)
+		var displayField = document.createElement("div");
+		displayField.id = "display-" + varName;
+		displayField.style.cssText = `
+			padding: 6px 24px 6px 8px;
+			background: rgba(255,255,255,0.08);
+			border: 1px solid rgba(255,255,255,0.15);
+			border-radius: 4px;
+			color: rgba(255,255,255,0.7);
+			font-size: 14px;
+			min-height: 16px;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			box-sizing: border-box;
+			position: relative;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		`;
+		displayField.textContent = "No selection";
 
-			selectList.value = '';
-			setTimeout(() => {
-				selectList.value = this.dropdownList[varName];
-				selectList.select();
-			}, 0);
+		// Add dropdown arrow indicator (points right since dropdown opens to the right)
+		var arrow = document.createElement("span");
+		arrow.innerHTML = "▶";
+		arrow.style.cssText = `
+			position: absolute;
+			right: 6px;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: 10px;
+			color: rgba(255,255,255,0.5);
+			pointer-events: none;
+		`;
+		displayField.appendChild(arrow);
+
+		displayField.onmouseenter = function () {
+			this.style.background = "rgba(255,255,255,0.12)";
+			this.style.borderColor = "rgba(100,100,255,0.6)";
+		};
+		displayField.onmouseleave = function () {
+			if (suggestionsList.style.display !== 'block') {
+				this.style.background = "rgba(255,255,255,0.08)";
+				this.style.borderColor = "rgba(255,255,255,0.15)";
+			}
+		};
+		dropdownContainer.appendChild(displayField);
+
+		// Create suggestions list (dropdown options) - positioned to the right of left panel
+		var suggestionsList = document.createElement("div");
+		suggestionsList.id = "suggestions-" + varName;
+		suggestionsList.className = "dropdown-suggestions";
+		suggestionsList.style.cssText = `
+			position: fixed;
+			left: 350px;
+			min-width: 300px;
+			max-width: 600px;
+			width: auto;
+			background: rgba(20,20,30,` + this.panelOpacity + `);
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(100,100,255,0.4);
+			border-radius: 8px;
+			max-height: 500px;
+			overflow: hidden;
+			z-index: 2000;
+			display: none;
+			box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+			resize: horizontal;
+			scrollbar-width: thin;
+			scrollbar-color: rgba(255,255,255,0.3) rgba(0,0,0,0.2);
+			flex-direction: column;
+		`;
+		document.body.appendChild(suggestionsList);
+
+		// Create search input (appears when dropdown is opened)
+		var searchInput = document.createElement("input");
+		searchInput.type = "text";
+		searchInput.id = "search-" + varName;
+		searchInput.placeholder = "Type to filter...";
+		searchInput.style.cssText = `
+			width: 100%;
+			padding: 8px 10px;
+			background: rgba(255,255,255,0.15);
+			border: none;
+			border-bottom: 1px solid rgba(255,255,255,0.1);
+			color: white;
+			font-size: 14px;
+			box-sizing: border-box;
+			outline: none;
+			flex-shrink: 0;
+			height: 40px;
+			z-index: 2001;
+		`;
+
+		// Options container (separate from search input to prevent focus loss)
+		var optionsContainer = document.createElement("div");
+		optionsContainer.id = "options-" + varName;
+		optionsContainer.style.cssText = `
+			overflow-y: auto;
+			overflow-x: hidden;
+		`;
+
+		// Add resize handle indicator
+		var resizeHandle = document.createElement("div");
+		resizeHandle.style.cssText = `
+			position: absolute;
+			bottom: 4px;
+			right: 4px;
+			width: 12px;
+			height: 12px;
+			background: linear-gradient(135deg, transparent 50%, rgba(100,100,255,0.5) 50%);
+			pointer-events: none;
+			border-bottom-right-radius: 8px;
+		`;
+
+		div.appendChild(dropdownContainer);
+
+		// Populate hidden select
+		arrOptions.forEach(function (value) {
+			var option = document.createElement('option');
+			option.value = value;
+			option.text = value;
+			selectList.appendChild(option);
 		});
 
-		// Optional: also trigger on click
-		selectList.addEventListener('click', () => {
-			selectList.select();
+		var currentHighlightIndex = -1;
+		var isDropdownOpen = false;
 
-			selectList.value = '';
-			setTimeout(() => {
-				selectList.value = this.dropdownList[varName];
-				selectList.select();
-			}, 0);
-		});
+		// Position dropdown to maximize vertical space and align with parent
+		var positionDropdown = function () {
+			var leftPanel = document.getElementById('divDeveloper');
+			var panelRect = leftPanel.getBoundingClientRect();
+			var displayRect = displayField.getBoundingClientRect();
 
+			// Get viewport height
+			var viewportHeight = window.innerHeight;
 
-		selectList.addEventListener('change', function(event) {
-			if (arrOptions.indexOf(event.target.value) >= 0) {
-				if (functChange) {
-					functChange(varName, event.target.value);
-					this.setValueDropdown(varName, event.target.value);
+			// Calculate the panel height (this is our target MAX height)
+			var panelHeight = panelRect.height;
+
+			// Calculate natural height based on content
+			var itemCount = optionsContainer.children.length;
+			var itemHeight = 29; // 8px padding top + 8px padding bottom + 12px font + 1px border
+			var searchInputHeight = 40;
+			var naturalHeight = searchInputHeight + (itemCount * itemHeight) + 20; // +20 for padding/margins
+
+			// Use natural height if there are few items, otherwise use panel height
+			var dropdownHeight;
+			var useFlex = false;
+			// Only maximize if natural height would be >= 70% of panel height (many items)
+			if (naturalHeight >= panelHeight * 0.85) {
+				// Many items: maximize to panel height
+				dropdownHeight = panelHeight;
+				useFlex = true;
+			} else {
+				// Few/moderate items: use natural height
+				dropdownHeight = Math.min(naturalHeight, panelHeight); // Cap at panel height
+				useFlex = false;
+			}
+
+			var topPosition;
+
+			if (useFlex) {
+				// Many items: align to panel top/bottom based on trigger position
+				var displayFieldMiddle = displayRect.top + (displayRect.height / 2);
+				var panelMiddle = panelRect.top + (panelRect.height / 2);
+
+				if (displayFieldMiddle > panelMiddle) {
+					// Display field is in bottom half - align bottoms
+					topPosition = panelRect.bottom - dropdownHeight;
+				} else {
+					// Display field is in top half - align tops
+					topPosition = panelRect.top;
+				}
+			} else {
+				// Few items: align near the trigger element
+				topPosition = displayRect.top;
+
+				// Adjust if dropdown would go off bottom of screen
+				if (topPosition + dropdownHeight > viewportHeight) {
+					topPosition = displayRect.bottom - dropdownHeight;
+				}
+
+				// Ensure it stays within panel bounds when possible
+				if (topPosition < panelRect.top) {
+					topPosition = panelRect.top;
 				}
 			}
-		}.bind(this));
-		selectList.addEventListener('blur', function() {
-			const value = selectList.value.trim().toLowerCase();
-			const match = arrOptions.find(item => item.toLowerCase() === value);
-			const filtered = arrOptions.filter(opt => opt.toLowerCase().includes(value));
 
-			if (!match) {
-
-				selectList.value = filtered[0]; // fallback to top of list
-				functChange(varName, filtered[0]);
-				this.setValueDropdown(varName, filtered[0]);
+			// Final bounds check - ensure dropdown doesn't go off screen
+			if (topPosition < 0) {
+				topPosition = 0;
 			}
-		}.bind(this));
+			if (topPosition + dropdownHeight > viewportHeight) {
+				topPosition = viewportHeight - dropdownHeight;
+			}
 
+			// Apply positioning
+			suggestionsList.style.top = topPosition + 'px';
 
-		//         // Add Previous and Next buttons on all dropdowns EXCEPT character type, character name, and gender
-		if (varName !== 'characterType' && varName !== 'character' && varName !== 'gender') {
+			// For few items, set exact height; for many items, set max-height and let it flex
+			if (useFlex) {
+				suggestionsList.style.height = dropdownHeight + 'px';
+				suggestionsList.style.maxHeight = dropdownHeight + 'px';
+				optionsContainer.style.flex = '1';
+			} else {
+				suggestionsList.style.height = 'auto';
+				suggestionsList.style.maxHeight = dropdownHeight + 'px';
+				optionsContainer.style.flex = '0 1 auto';
+			}
+		};
+
+		// Show suggestions function with live filtering
+		var showSuggestions = function (filter, showAll) {
+			// Close all other open dropdowns first and reset their display fields
+			var allDropdowns = document.querySelectorAll('.dropdown-suggestions');
+			allDropdowns.forEach(function (dropdown) {
+				if (dropdown.id !== suggestionsList.id) {
+					dropdown.style.display = 'none';
+					// Extract varName from dropdown id (format: "suggestions-varName")
+					var otherVarName = dropdown.id.replace('suggestions-', '');
+					var otherDisplayField = document.getElementById('display-' + otherVarName);
+					if (otherDisplayField) {
+						otherDisplayField.style.background = "rgba(255,255,255,0.08)";
+						otherDisplayField.style.borderColor = "rgba(255,255,255,0.15)";
+					}
+				}
+			});
+
+			// Clear only the options container, not the search input
+			optionsContainer.innerHTML = '';
+			currentHighlightIndex = -1;
+			var filteredOptions = [];
+
+			if (filter && filter.length > 0) {
+				filteredOptions = arrOptions.filter(function (opt) {
+					return opt.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
+				});
+			} else {
+				// Show all options when clicked (up to 1000 for performance)
+				filteredOptions = arrOptions.slice(0, showAll ? 1000 : arrOptions.length);
+			}
+
+			// Build dropdown structure if not already built
+			if (suggestionsList.childNodes.length === 0) {
+				suggestionsList.appendChild(searchInput);
+				suggestionsList.appendChild(optionsContainer);
+				suggestionsList.appendChild(resizeHandle);
+			}
+
+			if (filteredOptions.length > 0) {
+				var currentValue = selectList.value;
+				filteredOptions.forEach(function (opt, index) {
+					var item = document.createElement('div');
+					item.className = 'suggestion-item';
+					item.textContent = opt;
+
+					// Check if this is the currently selected value
+					var isCurrentValue = (opt === currentValue);
+
+					if (isCurrentValue) {
+						item.classList.add('current-value');
+					}
+
+					item.style.cssText = `
+						padding: 8px 10px;
+						cursor: pointer;
+						border-bottom: 1px solid rgba(255,255,255,0.05);
+						color: rgba(255,255,255,0.9);
+						font-size: 14px;
+						transition: all 0.15s ease;
+						white-space: nowrap;
+						overflow: visible;
+						${isCurrentValue ? 'background: rgba(100,200,100,0.2); border-left: 3px solid rgba(100,200,100,0.6); padding-left: 7px; font-weight: 500;' : ''}
+					`;
+					item.onmouseenter = function () {
+						this.style.background = "rgba(100,100,255,0.3)";
+						this.style.color = "white";
+					};
+					item.onmouseleave = function () {
+						if (!this.classList.contains('highlighted')) {
+							if (this.classList.contains('current-value')) {
+								this.style.background = "rgba(100,200,100,0.2)";
+								this.style.color = "rgba(255,255,255,0.9)";
+							} else {
+								this.style.background = "transparent";
+								this.style.color = "rgba(255,255,255,0.9)";
+							}
+						}
+					};
+					item.onclick = function () {
+						selectValue(opt);
+					};
+					optionsContainer.appendChild(item);
+				});
+
+				// Position dropdown intelligently
+				positionDropdown();
+
+				suggestionsList.style.display = 'flex';
+				isDropdownOpen = true;
+				displayField.style.background = "rgba(255,255,255,0.12)";
+				displayField.style.borderColor = "rgba(100,100,255,0.6)";
+
+				// Scroll to current value if it exists
+				setTimeout(function () {
+					var currentItem = optionsContainer.querySelector('.current-value');
+					if (currentItem) {
+						currentItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+					}
+				}, 50);
+			} else {
+				var noResults = document.createElement('div');
+				noResults.textContent = 'No matches found';
+				noResults.style.cssText = `
+					padding: 8px 10px;
+					color: rgba(255,255,255,0.5);
+					font-size: 14px;
+					font-style: italic;
+				`;
+				optionsContainer.appendChild(noResults);
+
+				// Position dropdown intelligently
+				positionDropdown();
+
+				suggestionsList.style.display = 'flex';
+			}
+		};
+
+		// Toggle dropdown on display field click
+		displayField.onclick = function (e) {
+			e.stopPropagation();
+			// Check actual visibility state instead of just the flag
+			var isActuallyOpen = (suggestionsList.style.display === 'flex');
+
+			if (isActuallyOpen) {
+				suggestionsList.style.display = 'none';
+				isDropdownOpen = false;
+				displayField.style.background = "rgba(255,255,255,0.08)";
+				displayField.style.borderColor = "rgba(255,255,255,0.15)";
+			} else {
+				// Close all other dropdowns first and reset their display fields
+				var allDropdowns = document.querySelectorAll('.dropdown-suggestions');
+				allDropdowns.forEach(function (dropdown) {
+					if (dropdown.id !== suggestionsList.id) {
+						dropdown.style.display = 'none';
+						// Extract varName and reset display field
+						var otherVarName = dropdown.id.replace('suggestions-', '');
+						var otherDisplayField = document.getElementById('display-' + otherVarName);
+						if (otherDisplayField) {
+							otherDisplayField.style.background = "rgba(255,255,255,0.08)";
+							otherDisplayField.style.borderColor = "rgba(255,255,255,0.15)";
+						}
+					}
+				});
+
+				showSuggestions('', true);
+				// Focus search input after a brief delay
+				setTimeout(function () {
+					searchInput.focus();
+				}, 100);
+			}
+		};
+
+		// Select value function
+		var selectValue = function (value) {
+			selectList.value = value;
+			var displayText = value;
+			if (displayText.length > 35) {
+				displayText = displayText.substring(0, 32) + '...';
+			}
+			displayField.childNodes[0].textContent = displayText;
+			displayField.style.color = "white";
+			searchInput.value = '';
+			suggestionsList.style.display = 'none';
+			isDropdownOpen = false;
+			displayField.style.background = "rgba(255,255,255,0.08)";
+			displayField.style.borderColor = "rgba(255,255,255,0.15)";
+			characterPreview.setValueDropdown(varName, value);
+			if (functChange) {
+				functChange(varName, value);
+			}
+		};
+
+		// Search input event
+		searchInput.addEventListener('input', function (e) {
+			showSuggestions(e.target.value, false);
+		});
+
+		// Prevent closing when clicking search input
+		searchInput.addEventListener('click', function (e) {
+			e.stopPropagation();
+		});
+
+		// Keyboard navigation
+		searchInput.addEventListener('keydown', function (e) {
+			var items = suggestionsList.querySelectorAll('.suggestion-item');
+
+			if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				if (items.length > 0) {
+					currentHighlightIndex = Math.min(currentHighlightIndex + 1, items.length - 1);
+					updateHighlight(items);
+				}
+			} else if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				if (currentHighlightIndex > 0) {
+					currentHighlightIndex--;
+					updateHighlight(items);
+				}
+			} else if (e.key === 'Enter') {
+				e.preventDefault();
+				if (currentHighlightIndex >= 0 && items[currentHighlightIndex]) {
+					selectValue(items[currentHighlightIndex].textContent);
+				}
+			} else if (e.key === 'Escape') {
+				suggestionsList.style.display = 'none';
+				isDropdownOpen = false;
+				displayField.style.background = "rgba(255,255,255,0.08)";
+				displayField.style.borderColor = "rgba(255,255,255,0.15)";
+				searchInput.blur();
+			}
+		});
+
+		var updateHighlight = function (items) {
+			items.forEach(function (item, index) {
+				if (index === currentHighlightIndex) {
+					item.classList.add('highlighted');
+					item.style.background = "rgba(100,100,255,0.5)";
+					item.style.color = "white";
+					item.scrollIntoView({ block: 'nearest' });
+				} else {
+					item.classList.remove('highlighted');
+					item.style.background = "transparent";
+					item.style.color = "rgba(255,255,255,0.8)";
+				}
+			});
+		};
+
+		// Click outside to close suggestions
+		document.addEventListener('click', function (e) {
+			if (!dropdownContainer.contains(e.target) && !suggestionsList.contains(e.target)) {
+				suggestionsList.style.display = 'none';
+				isDropdownOpen = false;
+				displayField.style.background = "rgba(255,255,255,0.08)";
+				displayField.style.borderColor = "rgba(255,255,255,0.15)";
+			}
+		});
+
+		// Reposition dropdown on window resize
+		window.addEventListener('resize', function () {
+			if (isDropdownOpen && suggestionsList.style.display === 'flex') {
+				positionDropdown();
+			}
+		});
+
+		// Add Previous, Next, and Copy buttons (exclude only characterType and gender)
+		if (varName !== 'characterType' && varName !== 'gender') {
+			var buttonContainer = document.createElement("div");
+			buttonContainer.style.cssText = `
+				display: flex;
+				gap: 4px;
+			`;
+
 			// Previous Button
 			var prevButton = document.createElement("button");
-			prevButton.innerHTML = "◄"; // Left-pointing arrow
-			prevButton.style = "padding: 0.5em; margin-left: 0.5em; cursor: pointer;";
-			prevButton.onclick = function() {
-				// var currentIndex = selectList.selectedIndex;
-				// var newIndex = (currentIndex - 1 + selectList.options.length) % selectList.options.length;
-				// selectList.selectedIndex = newIndex;
+			prevButton.innerHTML = "◄";
+			prevButton.style.cssText = `
+				flex: 1;
+				padding: 4px;
+				background: rgba(255,255,255,0.08);
+				color: white;
+				border: 1px solid rgba(255,255,255,0.15);
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 14px;
+				transition: all 0.2s ease;
+			`;
+			prevButton.onmouseenter = function () {
+				this.style.background = "rgba(100,100,255,0.3)";
+				this.style.borderColor = "rgba(100,100,255,0.5)";
+			};
+			prevButton.onmouseleave = function () {
+				this.style.background = "rgba(255,255,255,0.08)";
+				this.style.borderColor = "rgba(255,255,255,0.15)";
+			};
+			prevButton.onclick = function () {
 				var currentIndex = arrOptions.indexOf(selectList.value);
 				if (currentIndex >= 0) {
 					var nextIndex = (currentIndex - 1 >= 0) ? currentIndex - 1 : 0;
-					if (functChange) {
-						selectList.value = arrOptions[nextIndex];
-						functChange(varName, arrOptions[nextIndex]);
-					}
+					selectValue(arrOptions[nextIndex]);
 				}
 			};
-			div.appendChild(prevButton);
+			buttonContainer.appendChild(prevButton);
 
 			// Next Button
 			var nextButton = document.createElement("button");
-			nextButton.innerHTML = "►"; // Right-pointing arrow
-			nextButton.style = "padding: 0.5em; margin-left: 0.2em; cursor: pointer;";
-			nextButton.onclick = function() {
-				// var currentIndex = selectList.selectedIndex;
-				// var newIndex = (currentIndex + 1) % selectList.options.length;
-				// selectList.selectedIndex = newIndex;
-				// if (functChange) functChange(varName, selectList.value);                
+			nextButton.innerHTML = "►";
+			nextButton.style.cssText = `
+				flex: 1;
+				padding: 4px;
+				background: rgba(255,255,255,0.08);
+				color: white;
+				border: 1px solid rgba(255,255,255,0.15);
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 14px;
+				transition: all 0.2s ease;
+			`;
+			nextButton.onmouseenter = function () {
+				this.style.background = "rgba(100,100,255,0.3)";
+				this.style.borderColor = "rgba(100,100,255,0.5)";
+			};
+			nextButton.onmouseleave = function () {
+				this.style.background = "rgba(255,255,255,0.08)";
+				this.style.borderColor = "rgba(255,255,255,0.15)";
+			};
+			nextButton.onclick = function () {
 				var currentIndex = arrOptions.indexOf(selectList.value);
 				if (currentIndex >= 0) {
 					var nextIndex = (currentIndex + 1 < arrOptions.length) ? currentIndex + 1 : currentIndex;
-					if (functChange) {
-						selectList.value = arrOptions[nextIndex];
-						functChange(varName, arrOptions[nextIndex]);
-					}
+					selectValue(arrOptions[nextIndex]);
 				}
 			};
-			div.appendChild(nextButton);
+			buttonContainer.appendChild(nextButton);
+
+			// Copy Button
+			var copyButton = document.createElement("button");
+			copyButton.innerHTML = "📋";
+			copyButton.title = "Copy to clipboard";
+			copyButton.style.cssText = `
+				flex: 0 0 32px;
+				padding: 4px;
+				background: rgba(100,150,200,0.2);
+				color: white;
+				border: 1px solid rgba(100,150,200,0.3);
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 14px;
+				transition: all 0.2s ease;
+			`;
+			copyButton.onmouseenter = function () {
+				this.style.background = "rgba(100,150,200,0.4)";
+				this.style.borderColor = "rgba(100,150,200,0.6)";
+			};
+			copyButton.onmouseleave = function () {
+				this.style.background = "rgba(100,150,200,0.2)";
+				this.style.borderColor = "rgba(100,150,200,0.3)";
+			};
+			copyButton.onclick = function () {
+				var textToCopy = selectList.value;
+				if (!textToCopy) {
+					characterPreview.createButtonNote("Nothing to copy");
+					setTimeout(function () { characterPreview.resetButtonNote(); }, 2000);
+					return;
+				}
+				var textArea = document.createElement('textarea');
+				textArea.value = textToCopy;
+				textArea.style.position = 'fixed';
+				document.body.appendChild(textArea);
+				textArea.focus();
+				textArea.select();
+				try {
+					var successful = document.execCommand('copy');
+					if (successful) {
+						characterPreview.createButtonNote("Copied: " + textToCopy);
+						setTimeout(function () { characterPreview.resetButtonNote(); }, 2000);
+					} else {
+						characterPreview.createButtonNote("Failed to copy");
+						setTimeout(function () { characterPreview.resetButtonNote(); }, 2000);
+					}
+				} catch (err) {
+					characterPreview.createButtonNote("Error copying: " + err);
+					setTimeout(function () { characterPreview.resetButtonNote(); }, 2000);
+				}
+				document.body.removeChild(textArea);
+			};
+			buttonContainer.appendChild(copyButton);
+
+			div.appendChild(buttonContainer);
 		}
 
-
-		//         //Create and append the options
-		//         for (var i = 0; i < arrOptions.length; i++) {
-		//             var option = document.createElement("option");
-		//             option.value = arrOptions[i];
-		//             option.text = arrOptions[i];
-		//             selectList.appendChild(option);
-		//         }
+		// Set default value
 		if (defaultValue) {
-			// selectList.value=defaultValue;
-			this.setValueDropdown(varName, defaultValue);
-		} else if (this.charData[this.currentCharName] && this.charData[this.currentCharName][this.currentGender]) {
-			if (!this.charData[this.currentCharName][this.currentGender][varName]) this.charData[this.currentCharName][this.currentGender][varName] = varName + "-none";
-			this.setValueDropdown(varName, this.charData[this.currentCharName][this.currentGender][varName]);
-			//             if(!this.charData[this.currentCharName][this.currentGender][varName])this.charData[this.currentCharName][this.currentGender][varName]=varName+"-none";
-			//             selectList.value=this.charData[this.currentCharName][this.currentGender][varName];
+			selectValue(defaultValue);
+		} else if (characterPreview.charData[characterPreview.currentCharName] &&
+				characterPreview.charData[characterPreview.currentCharName][characterPreview.currentGender]) {
+			var savedValue = characterPreview.charData[characterPreview.currentCharName][characterPreview.currentGender][varName];
+			if (!savedValue) {
+				savedValue = varName + "-none";
+				characterPreview.charData[characterPreview.currentCharName][characterPreview.currentGender][varName] = savedValue;
+			}
+			if (arrOptions.indexOf(savedValue) >= 0) {
+				selectValue(savedValue);
+			} else {
+				selectValue(arrOptions[0]);
+			}
+		} else {
+			selectValue(arrOptions[0]);
 		}
-		//        else selectList.selectedIndex=0;
-		else selectList.value = arrOptions[0];
+
 		ig.soundHandler.bgmPlayer.volume(0);
 	},
 
-	createDropdown: function(par, varName, text, arrOptions, functChange, defaultValue) {
+	createCheckbox: function (par, varName, text, functChange, defaultValue) {
+		if (document.getElementById(varName) != null) {
+			document.getElementById("div" + varName).remove();
+		} 
+		var myParent = document.getElementById(par);
+		var div = document.createElement("div");
+		div.id = "div" + varName;
+		div.style.cssText = `
+			margin: 6px 0;
+			padding: 6px;
+			background: rgba(255,255,255,0.03);
+			border-radius: 6px;
+			border: 1px solid rgba(255,255,255,0.08);
+		`;
+		myParent.appendChild(div);
+
+		var label = document.createElement("label");		
+		label.innerHTML = text;
+		label.htmlFor =varName;
+		label.style.cssText = `			
+			margin-bottom: 4px;
+			font-size: 16px;
+			font-weight: 500;
+			color: rgba(255,255,255,0.9);
+			letter-spacing: 0.3px;
+		`;
+		
+
+		var inputCheckbox = document.createElement("input");
+		//  <input type="checkbox" id="flipHorizontal" style="margin-right: 0.5em;">
+        //                 Flip Horizontally
+		inputCheckbox.id = varName;
+		inputCheckbox.type="checkbox";
+		inputCheckbox.checked=defaultValue;
+		inputCheckbox.style.cssText = `
+			margin-right: 0.5em;			
+		`;
+		
+		div.appendChild(inputCheckbox);
+		div.appendChild(label);
+
+		inputCheckbox.addEventListener('change', function (event) {
+			if (functChange) functChange(varName, event.target.checked);
+		});
+
+		// if (defaultValue) {
+		// 	this.setValueDropdown(varName, defaultValue);
+		// } else if (this.charData[this.currentCharName] && this.charData[this.currentCharName][this.currentGender]) {
+		// 	if (!this.charData[this.currentCharName][this.currentGender][varName]) this.charData[this.currentCharName][this.currentGender][varName] = varName + "-none";
+		// 	this.setValueDropdown(varName, this.charData[this.currentCharName][this.currentGender][varName]);
+		// } else selectList.selectedIndex = 0;
+		ig.soundHandler.bgmPlayer.volume(0);
+	},
+
+	createDropdown: function (par, varName, text, arrOptions, functChange, defaultValue) {
 		if (document.getElementById(varName) != null) {
 			document.getElementById("div" + varName).remove();
 		} else {
@@ -1336,17 +2122,54 @@ var characterPreview = {
 		var myParent = document.getElementById(par);
 		var div = document.createElement("div");
 		div.id = "div" + varName;
-		div.style = "margin:1em;";
+		div.style.cssText = `
+			margin: 6px 0;
+			padding: 6px;
+			background: rgba(255,255,255,0.03);
+			border-radius: 6px;
+			border: 1px solid rgba(255,255,255,0.08);
+		`;
 		myParent.appendChild(div);
-		div.innerHTML = text;
+
+		var label = document.createElement("label");
+		label.innerHTML = text;
+		label.style.cssText = `
+			display: block;
+			margin-bottom: 4px;
+			font-size: 16px;
+			font-weight: 500;
+			color: rgba(255,255,255,0.9);
+			letter-spacing: 0.3px;
+		`;
+		div.appendChild(label);
 
 		var selectList = document.createElement("select");
 		selectList.id = varName;
-		selectList.style = "padding:0.5em;";
+		selectList.style.cssText = `
+			width: 100%;
+			padding: 6px 8px;
+			background: rgba(255,255,255,0.08);
+			border: 1px solid rgba(255,255,255,0.15);
+			border-radius: 4px;
+			color: white;
+			font-size: 14px;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			box-sizing: border-box;
+		`;
+		selectList.onfocus = function () {
+			this.style.background = "rgba(255,255,255,0.12)";
+			this.style.borderColor = "rgba(100,100,255,0.6)";
+			this.style.outline = "none";
+		};
+		selectList.onblur = function () {
+			this.style.background = "rgba(255,255,255,0.08)";
+			this.style.borderColor = "rgba(255,255,255,0.15)";
+		};
 		div.appendChild(selectList);
 
 
-		selectList.addEventListener('change', function(event) {
+		selectList.addEventListener('change', function (event) {
 			if (functChange) functChange(varName, event.target.value);
 		});
 
@@ -1356,7 +2179,7 @@ var characterPreview = {
 			var prevButton = document.createElement("button");
 			prevButton.innerHTML = "◄"; // Left-pointing arrow
 			prevButton.style = "padding: 0.5em; margin-left: 0.5em; cursor: pointer;";
-			prevButton.onclick = function() {
+			prevButton.onclick = function () {
 				var currentIndex = selectList.selectedIndex;
 				var newIndex = (currentIndex - 1 + selectList.options.length) % selectList.options.length;
 				selectList.selectedIndex = newIndex;
@@ -1368,7 +2191,7 @@ var characterPreview = {
 			var nextButton = document.createElement("button");
 			nextButton.innerHTML = "►"; // Right-pointing arrow
 			nextButton.style = "padding: 0.5em; margin-left: 0.2em; cursor: pointer;";
-			nextButton.onclick = function() {
+			nextButton.onclick = function () {
 				var currentIndex = selectList.selectedIndex;
 				var newIndex = (currentIndex + 1) % selectList.options.length;
 				selectList.selectedIndex = newIndex;
@@ -1383,6 +2206,11 @@ var characterPreview = {
 			var option = document.createElement("option");
 			option.value = arrOptions[i];
 			option.text = arrOptions[i];
+			option.style.cssText = `
+				background: rgba(30,30,40,0.95);
+				color: rgba(255,255,255,0.9);
+				padding: 4px;
+			`;
 			selectList.appendChild(option);
 		}
 		if (defaultValue) {
@@ -1393,4 +2221,4 @@ var characterPreview = {
 		} else selectList.selectedIndex = 0;
 		ig.soundHandler.bgmPlayer.volume(0);
 	}
-}
+};
